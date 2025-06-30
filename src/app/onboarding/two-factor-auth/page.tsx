@@ -49,10 +49,10 @@ export default function TwoFactorAuthPage() {
             />
         </div>
       </div>
-      <div className="flex gap-4 mt-8">
-         <Button onClick={() => router.push("/onboarding/integrations")} variant="ghost" className="w-full">
-          Skip for now
-        </Button>
+      <p className="text-center text-sm text-muted-foreground mt-6">
+        Securing your account is important. You will need to complete this step to proceed.
+      </p>
+      <div className="mt-4">
         <Button onClick={handleNext} className="w-full bg-primary hover:bg-primary/90">
           <ShieldCheck className="mr-2 h-4 w-4" />
           Verify & Continue
