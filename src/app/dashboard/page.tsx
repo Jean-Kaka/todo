@@ -9,6 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlusCircle, MessageCircle, BarChartHorizontalBig, AlertTriangle, CalendarClock, Bell, Lightbulb, Database, Users, Timer } from "lucide-react";
 import Link from "next/link";
 import StatCard from "@/components/dashboard/StatCard";
+import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
 
 const mockDataSources: DataSourceCardProps[] = [
   { id: "ds1", name: "Sales Q3 Data", type: "File", freshness: "Updated 5 mins ago", rowCount: 150234, schemaSummary: "12 columns, 3 indexed", status: "ok" },
@@ -40,6 +41,11 @@ export default function DashboardPage() {
            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {mockStats.map(stat => <StatCard key={stat.title} {...stat} />)}
            </div>
+        </section>
+
+        {/* Analytics Charts */}
+        <section>
+          <AnalyticsCharts />
         </section>
         
         {/* Quick Actions */}

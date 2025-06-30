@@ -7,7 +7,8 @@ import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ToyBrick } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function SampleDataPage() {
   const router = useRouter();
@@ -23,31 +24,44 @@ export default function SampleDataPage() {
     <OnboardingLayout
       currentStep={4}
       totalSteps={6}
-      title="Try AgentY with Sample Data?"
-      description="Import a sample dataset to explore AgentY's features right away."
+      title="Ready to Explore?"
+      description="We can add a sample dataset to get you started right away."
     >
-      <div className="flex items-center justify-between p-4 border rounded-md">
-        <div className="flex items-center gap-3">
-          <ToyBrick className="h-6 w-6 text-primary" />
-          <Label htmlFor="sample-data-switch" className="text-base">
-            Import Sample Dataset
-          </Label>
-        </div>
-        <Switch
-          id="sample-data-switch"
-          checked={importSampleData}
-          onCheckedChange={setImportSampleData}
-        />
-      </div>
-      <p className="text-sm text-muted-foreground mt-3">
-        This will add a pre-configured dataset to your account so you can test features like AI Assistant and Insight Hub immediately. You can remove it later.
+      <Card className="bg-secondary/50 border-primary/20">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Sparkles className="h-7 w-7 text-accent" />
+              <div>
+                <Label htmlFor="sample-data-switch" className="text-base font-medium">
+                  Load Sample Dataset
+                </Label>
+                <p className="text-sm text-muted-foreground">Explore features immediately.</p>
+              </div>
+            </div>
+            <Switch
+              id="sample-data-switch"
+              checked={importSampleData}
+              onCheckedChange={setImportSampleData}
+              className="data-[state=checked]:bg-accent"
+            />
+          </div>
+        </CardContent>
+      </Card>
+      
+      <p className="text-sm text-muted-foreground mt-4 text-center">
+        This adds a pre-configured dataset so you can test features like AI Assistant and Insight Hub. You can remove it later.
       </p>
+
       <div className="flex gap-4 mt-8">
-        <Button onClick={() => router.push("/onboarding/two-factor-auth")} variant="outline" className="w-full">
+        <Button onClick={() => {
+            console.log("Import sample data: false");
+            router.push("/onboarding/two-factor-auth");
+        }} variant="outline" className="w-full">
           Skip
         </Button>
         <Button onClick={handleNext} className="w-full bg-primary hover:bg-primary/90">
-          {importSampleData ? "Import & Continue" : "Continue"}
+          {importSampleData ? "Import & Continue" : "Continue without Sample Data"}
         </Button>
       </div>
     </OnboardingLayout>
