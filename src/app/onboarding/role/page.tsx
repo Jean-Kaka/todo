@@ -23,14 +23,14 @@ export default function RoleSelectionPage() {
     if (selectedRole) {
       // Save selectedRole to localStorage or state management
       console.log("Selected role:", selectedRole);
-      router.push("/onboarding/data-sources");
+      router.push("/onboarding/company-details");
     }
   };
 
   return (
     <OnboardingLayout
       currentStep={1}
-      totalSteps={4}
+      totalSteps={6}
       title="What's your role?"
       description="This helps us personalize your AgentY experience."
     >

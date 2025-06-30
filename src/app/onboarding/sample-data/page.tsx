@@ -16,13 +16,13 @@ export default function SampleDataPage() {
   const handleNext = () => {
     // Save preference
     console.log("Import sample data:", importSampleData);
-    router.push("/onboarding/integrations");
+    router.push("/onboarding/two-factor-auth");
   };
 
   return (
     <OnboardingLayout
-      currentStep={3}
-      totalSteps={4}
+      currentStep={4}
+      totalSteps={6}
       title="Try AgentY with Sample Data?"
       description="Import a sample dataset to explore AgentY's features right away."
     >
@@ -43,7 +43,7 @@ export default function SampleDataPage() {
         This will add a pre-configured dataset to your account so you can test features like AI Assistant and Insight Hub immediately. You can remove it later.
       </p>
       <div className="flex gap-4 mt-8">
-        <Button onClick={() => router.push("/onboarding/integrations")} variant="outline" className="w-full">
+        <Button onClick={() => router.push("/onboarding/two-factor-auth")} variant="outline" className="w-full">
           Skip
         </Button>
         <Button onClick={handleNext} className="w-full bg-primary hover:bg-primary/90">

@@ -25,8 +25,8 @@ export default function IntegrationsPage() {
 
   return (
     <OnboardingLayout
-      currentStep={4}
-      totalSteps={4}
+      currentStep={6}
+      totalSteps={6}
       title="Set Up Integrations (Optional)"
       description="Connect AgentY with your favorite tools and services."
     >

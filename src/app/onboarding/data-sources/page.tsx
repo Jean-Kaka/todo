@@ -37,8 +37,8 @@ export default function DataSourcesPage() {
 
   return (
     <OnboardingLayout
-      currentStep={2}
-      totalSteps={4}
+      currentStep={3}
+      totalSteps={6}
       title="Preferred Data Sources"
       description="Let us know what types of data you primarily work with."
     >

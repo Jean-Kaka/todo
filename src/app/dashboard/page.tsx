@@ -6,8 +6,9 @@ import DataSourceCard, { DataSourceCardProps } from "@/components/dashboard/Data
 import InsightCard, { InsightCardProps } from "@/components/dashboard/InsightCard";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { PlusCircle, MessageCircle, BarChartHorizontalBig, AlertTriangle, CalendarClock, Bell } from "lucide-react";
+import { PlusCircle, MessageCircle, BarChartHorizontalBig, AlertTriangle, CalendarClock, Bell, Lightbulb, Database, Users, Timer } from "lucide-react";
 import Link from "next/link";
+import StatCard from "@/components/dashboard/StatCard";
 
 const mockDataSources: DataSourceCardProps[] = [
   { id: "ds1", name: "Sales Q3 Data", type: "File", freshness: "Updated 5 mins ago", rowCount: 150234, schemaSummary: "12 columns, 3 indexed", status: "ok" },
@@ -22,10 +23,25 @@ const mockInsights: InsightCardProps[] = [
   { id: "in3", title: "Product Category C has highest engagement", description: "Users spend more time on average with products in Category C.", chartImage: "https://placehold.co/400x225.png", dataAiHint: "pie chart engagement" },
 ];
 
+const mockStats = [
+  { title: "Insights Generated", value: "1,254", icon: Lightbulb, change: "+20.1%", changeType: "increase" as const },
+  { title: "Data Sources", value: "12", icon: Database, change: "+2", changeType: "increase" as const },
+  { title: "Active Users", value: "23", icon: Users, change: "-1.5%", changeType: "decrease" as const },
+  { title: "Avg. Query Time", value: "2.1s", icon: Timer, change: "+0.2s", changeType: "decrease" as const },
+];
+
+
 export default function DashboardPage() {
   return (
     <AppLayout>
       <div className="space-y-8">
+        {/* Key Statistics */}
+        <section>
+           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {mockStats.map(stat => <StatCard key={stat.title} {...stat} />)}
+           </div>
+        </section>
+        
         {/* Quick Actions */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 font-headline">Quick Actions</h2>
