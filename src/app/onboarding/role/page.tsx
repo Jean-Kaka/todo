@@ -10,15 +10,15 @@ import { Briefcase, ShieldCheck, Code, Megaphone, ClipboardList, GraduationCap, 
 import { cn } from "@/lib/utils";
 
 const roles = [
-  { id: "data_analyst", name: "Data Analyst", icon: Briefcase, description: "Focus on data exploration and visualization." },
-  { id: "manager", name: "Manager", icon: ShieldCheck, description: "Oversee team performance and strategic insights." },
-  { id: "engineer", name: "Engineer", icon: Code, description: "Integrate data sources and manage infrastructure." },
-  { id: "marketing_specialist", name: "Marketing Specialist", icon: Megaphone, description: "Analyze campaign performance and customer behavior." },
-  { id: "product_manager", name: "Product Manager", icon: ClipboardList, description: "Track feature adoption and user engagement metrics." },
-  { id: "student", name: "Student / Researcher", icon: GraduationCap, description: "Explore datasets for academic or personal projects." },
   { id: "ceo", name: "CEO", icon: Crown, description: "High-level business overview and strategic decision making." },
   { id: "general_manager", name: "General Manager", icon: UserSquare, description: "Manage overall business operations and performance." },
+  { id: "manager", name: "Manager", icon: ShieldCheck, description: "Oversee team performance and strategic insights." },
   { id: "operations_manager", name: "Operations Manager", icon: Cog, description: "Optimize processes, supply chain, and daily operations." },
+  { id: "product_manager", name: "Product Manager", icon: ClipboardList, description: "Track feature adoption and user engagement metrics." },
+  { id: "engineer", name: "Engineer", icon: Code, description: "Integrate data sources and manage infrastructure." },
+  { id: "data_analyst", name: "Data Analyst", icon: Briefcase, description: "Focus on data exploration and visualization." },
+  { id: "marketing_specialist", name: "Marketing Specialist", icon: Megaphone, description: "Analyze campaign performance and customer behavior." },
+  { id: "student", name: "Student / Researcher", icon: GraduationCap, description: "Explore datasets for academic or personal projects." },
 ];
 
 export default function RoleSelectionPage() {
