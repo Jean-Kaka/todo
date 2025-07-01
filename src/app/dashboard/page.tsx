@@ -1,6 +1,7 @@
 // src/app/dashboard/page.tsx
 "use client";
 
+import { useEffect, useState } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import DataSourceCard, { DataSourceCardProps } from "@/components/dashboard/DataSourceCard";
 import InsightCard, { InsightCardProps } from "@/components/dashboard/InsightCard";
@@ -12,78 +13,65 @@ import {
   BarChartHorizontalBig, 
   AlertTriangle, 
   Bell, 
-  Database, 
-  DollarSign, 
-  UserPlus, 
-  Repeat,
-  ArrowRight,
-  FileUp,
-  Lightbulb,
-  FilePlus2,
-  Users
+  ArrowRight
 } from "lucide-react";
 import Link from "next/link";
-import StatCard from "@/components/dashboard/StatCard";
+import StatCard, { StatCardProps } from "@/components/dashboard/StatCard";
 import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const mockDataSources: DataSourceCardProps[] = [
-  { id: "ds1", name: "Sales Q3 Data", type: "File", freshness: "Updated 5 mins ago", rowCount: 150234, schemaSummary: "12 columns, 3 indexed", status: "ok" },
-  { id: "ds2", name: "Customer Database", type: "Database", freshness: "Syncing...", rowCount: 87650, schemaSummary: "25 columns, 8 indexed", status: "syncing" },
-  { id: "ds3", name: "Marketing API", type: "API", freshness: "Last checked 1 day ago", rowCount: 500000, schemaSummary: "8 fields", status: "error" },
-];
+// Import the new service functions
+import { 
+  getDashboardStats,
+  getRecentActivity,
+  getLatestInsights,
+  getDataSourcesSummary
+} from "@/services/metricsService";
 
-const mockInsights: InsightCardProps[] = [
-  { id: "in1", title: "Sales up 18% this week", description: "Compared to last week, overall sales have increased significantly.", chartImage: "https://placehold.co/400x225.png", dataAiHint: "bar chart sales" },
-  { id: "in2", title: "New User Sign-ups Peaked", description: "Identified a mid-week surge in new user registrations.", chartImage: "https://placehold.co/400x225.png", dataAiHint: "line chart users" },
-  { id: "in3", title: "Category C has highest engagement", description: "Users spend more time with products in Category C.", chartImage: "https://placehold.co/400x225.png", dataAiHint: "pie chart engagement" },
-];
-
-const mockStats = [
-  { title: "Monthly Sales", value: "$45,231.89", icon: DollarSign, change: "+20.1%", changeType: "increase" as const },
-  { title: "New Users", value: "+1,234", icon: UserPlus, change: "+15.2%", changeType: "increase" as const },
-  { title: "Recurring Users", value: "8,765", icon: Repeat, change: "+5.7%", changeType: "increase" as const },
-  { title: "Data Sources", value: "12", icon: Database, change: "+2", changeType: "increase" as const },
-];
-
-const mockActivity = [
-  {
-    id: "act1",
-    user: { name: "Alice" },
-    action: "uploaded a new data source",
-    target: "Q4 Sales Report.csv",
-    time: "5m ago",
-    icon: FileUp,
-  },
-  {
-    id: "act2",
-    user: { name: "AI Assistant" },
-    action: "generated a new insight about",
-    target: "User Engagement Trends",
-    time: "30m ago",
-    icon: Lightbulb,
-  },
-  {
-    id: "act3",
-    user: { name: "Bob" },
-    action: "created a new report",
-    target: "Weekly Marketing KPIs",
-    time: "2h ago",
-    icon: FilePlus2,
-  },
-  {
-    id: "act4",
-    user: { name: "Alice" },
-    action: "added 3 new team members",
-    target: "",
-    time: "1d ago",
-    icon: Users,
-  },
-];
-
+// Define a type for activity items
+type Activity = {
+    id: string;
+    user: { name: string; };
+    action: string;
+    target: string;
+    time: string;
+    icon: React.ElementType;
+};
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState<StatCardProps[]>([]);
+  const [dataSources, setDataSources] = useState<DataSourceCardProps[]>([]);
+  const [insights, setInsights] = useState<InsightCardProps[]>([]);
+  const [activity, setActivity] = useState<Activity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setIsLoading(true);
+      try {
+        const [statsData, activityData, insightsData, dataSourcesData] = await Promise.all([
+          getDashboardStats(),
+          getRecentActivity(),
+          getLatestInsights(),
+          getDataSourcesSummary()
+        ]);
+        setStats(statsData);
+        setActivity(activityData as Activity[]);
+        setInsights(insightsData);
+        setDataSources(dataSourcesData);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        // Here you could show a toast notification
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   return (
     <AppLayout>
       <div className="space-y-8">
@@ -92,7 +80,16 @@ export default function DashboardPage() {
         <section>
            <h2 className="text-2xl font-semibold mb-4 font-headline">Overview</h2>
            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {mockStats.map(stat => <StatCard key={stat.title} {...stat} />)}
+            {isLoading ? (
+              <>
+                <Skeleton className="h-[126px]" />
+                <Skeleton className="h-[126px]" />
+                <Skeleton className="h-[126px]" />
+                <Skeleton className="h-[126px]" />
+              </>
+            ) : (
+              stats.map(stat => <StatCard key={stat.title} {...stat} />)
+            )}
            </div>
         </section>
 
@@ -139,7 +136,15 @@ export default function DashboardPage() {
                   </Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {mockDataSources.map(ds => <DataSourceCard key={ds.id} {...ds} />)}
+                {isLoading ? (
+                  <>
+                    <Skeleton className="h-[268px]" />
+                    <Skeleton className="h-[268px]" />
+                    <Skeleton className="h-[268px]" />
+                  </>
+                ) : (
+                  dataSources.map(ds => <DataSourceCard key={ds.id} {...ds} />)
+                )}
               </div>
             </section>
 
@@ -151,7 +156,14 @@ export default function DashboardPage() {
                 </Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {mockInsights.slice(0, 2).map(insight => <InsightCard key={insight.id} {...insight} />)}
+                {isLoading ? (
+                    <>
+                      <Skeleton className="h-[370px]" />
+                      <Skeleton className="h-[370px]" />
+                    </>
+                ) : (
+                  insights.slice(0, 2).map(insight => <InsightCard key={insight.id} {...insight} />)
+                )}
               </div>
             </section>
 
@@ -164,22 +176,31 @@ export default function DashboardPage() {
               <Card>
                 <CardContent className="p-0">
                   <div className="space-y-4 p-4">
-                    {mockActivity.map((activity, index) => (
-                      <div key={activity.id}>
-                        <div className="flex items-start gap-3">
-                           <div className="bg-muted rounded-full p-2 mt-1">
-                             <activity.icon className="h-5 w-5 text-muted-foreground" />
-                           </div>
-                          <div className="text-sm flex-1">
-                            <p className="leading-snug">
-                              <span className="font-semibold">{activity.user.name}</span> {activity.action} {activity.target && <span className="font-semibold text-primary">{activity.target}</span>}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{activity.time}</p>
-                          </div>
-                        </div>
-                         {index < mockActivity.length - 1 && <Separator className="mt-4"/>}
+                    {isLoading ? (
+                      <div className="space-y-4">
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
                       </div>
-                    ))}
+                    ) : (
+                      activity.map((activityItem, index) => (
+                        <div key={activityItem.id}>
+                          <div className="flex items-start gap-3">
+                            <div className="bg-muted rounded-full p-2 mt-1">
+                              <activityItem.icon className="h-5 w-5 text-muted-foreground" />
+                            </div>
+                            <div className="text-sm flex-1">
+                              <p className="leading-snug">
+                                <span className="font-semibold">{activityItem.user.name}</span> {activityItem.action} {activityItem.target && <span className="font-semibold text-primary">{activityItem.target}</span>}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{activityItem.time}</p>
+                            </div>
+                          </div>
+                          {index < activity.length - 1 && <Separator className="mt-4"/>}
+                        </div>
+                      ))
+                    )}
                    </div>
                 </CardContent>
               </Card>
