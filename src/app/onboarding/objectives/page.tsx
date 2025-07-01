@@ -47,8 +47,8 @@ export default function ObjectivesPage() {
     <OnboardingLayout
       currentStep={3}
       totalSteps={7}
-      title="What are your main objectives?"
-      description="Select your primary goals. This helps us suggest relevant insights."
+      title="What are your company's main objectives?"
+      description="Select your primary goals. This helps us suggest relevant insights for your business."
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {objectiveOptions.map((objective) => (
