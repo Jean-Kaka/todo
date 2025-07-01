@@ -6,10 +6,27 @@ import DataSourceCard, { DataSourceCardProps } from "@/components/dashboard/Data
 import InsightCard, { InsightCardProps } from "@/components/dashboard/InsightCard";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { PlusCircle, MessageCircle, BarChartHorizontalBig, AlertTriangle, CalendarClock, Bell, Database, DollarSign, UserPlus, Repeat } from "lucide-react";
+import { 
+  PlusCircle, 
+  MessageCircle, 
+  BarChartHorizontalBig, 
+  AlertTriangle, 
+  Bell, 
+  Database, 
+  DollarSign, 
+  UserPlus, 
+  Repeat,
+  ArrowRight,
+  FileUp,
+  Lightbulb,
+  FilePlus2,
+  Users
+} from "lucide-react";
 import Link from "next/link";
 import StatCard from "@/components/dashboard/StatCard";
 import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const mockDataSources: DataSourceCardProps[] = [
   { id: "ds1", name: "Sales Q3 Data", type: "File", freshness: "Updated 5 mins ago", rowCount: 150234, schemaSummary: "12 columns, 3 indexed", status: "ok" },
@@ -30,6 +47,41 @@ const mockStats = [
   { title: "Data Sources", value: "12", icon: Database, change: "+2", changeType: "increase" as const },
 ];
 
+const mockActivity = [
+  {
+    id: "act1",
+    user: { name: "Alice" },
+    action: "uploaded a new data source",
+    target: "Q4 Sales Report.csv",
+    time: "5m ago",
+    icon: FileUp,
+  },
+  {
+    id: "act2",
+    user: { name: "AI Assistant" },
+    action: "generated a new insight about",
+    target: "User Engagement Trends",
+    time: "30m ago",
+    icon: Lightbulb,
+  },
+  {
+    id: "act3",
+    user: { name: "Bob" },
+    action: "created a new report",
+    target: "Weekly Marketing KPIs",
+    time: "2h ago",
+    icon: FilePlus2,
+  },
+  {
+    id: "act4",
+    user: { name: "Alice" },
+    action: "added 3 new team members",
+    target: "",
+    time: "1d ago",
+    icon: Users,
+  },
+];
+
 
 export default function DashboardPage() {
   return (
@@ -38,6 +90,7 @@ export default function DashboardPage() {
         
         {/* Top Row: Key Statistics */}
         <section>
+           <h2 className="text-2xl font-semibold mb-4 font-headline">Overview</h2>
            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {mockStats.map(stat => <StatCard key={stat.title} {...stat} />)}
            </div>
@@ -79,9 +132,26 @@ export default function DashboardPage() {
             </section>
             
             <section>
-              <h2 className="text-2xl font-semibold mb-4 font-headline">Your Data Sources</h2>
+              <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-semibold font-headline">Your Data Sources</h2>
+                  <Button variant="ghost" asChild>
+                      <Link href="/knowledge-base">View All <ArrowRight className="ml-2 h-4 w-4"/></Link>
+                  </Button>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {mockDataSources.map(ds => <DataSourceCard key={ds.id} {...ds} />)}
+              </div>
+            </section>
+
+            <section>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-semibold font-headline">Latest Insights</h2>
+                <Button variant="ghost" asChild>
+                  <Link href="/insight-hub">View All <ArrowRight className="ml-2 h-4 w-4"/></Link>
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {mockInsights.slice(0, 2).map(insight => <InsightCard key={insight.id} {...insight} />)}
               </div>
             </section>
 
@@ -89,14 +159,32 @@ export default function DashboardPage() {
           
           {/* Right Column (takes up 1/3 space on large screens) */}
           <div className="space-y-8">
-
             <section>
-              <h2 className="text-2xl font-semibold mb-4 font-headline">Latest Insights</h2>
-              <div className="grid grid-cols-1 gap-6">
-                {mockInsights.map(insight => <InsightCard key={insight.id} {...insight} />)}
-              </div>
+              <h2 className="text-2xl font-semibold mb-4 font-headline">Recent Activity</h2>
+              <Card>
+                <CardContent className="p-0">
+                  <div className="space-y-4 p-4">
+                    {mockActivity.map((activity, index) => (
+                      <div key={activity.id}>
+                        <div className="flex items-start gap-3">
+                           <div className="bg-muted rounded-full p-2 mt-1">
+                             <activity.icon className="h-5 w-5 text-muted-foreground" />
+                           </div>
+                          <div className="text-sm flex-1">
+                            <p className="leading-snug">
+                              <span className="font-semibold">{activity.user.name}</span> {activity.action} {activity.target && <span className="font-semibold text-primary">{activity.target}</span>}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{activity.time}</p>
+                          </div>
+                        </div>
+                         {index < mockActivity.length - 1 && <Separator className="mt-4"/>}
+                      </div>
+                    ))}
+                   </div>
+                </CardContent>
+              </Card>
             </section>
-            
+
             <section>
               <h2 className="text-2xl font-semibold mb-4 font-headline">Alerts & Notifications</h2>
               <div className="space-y-4">
@@ -114,14 +202,6 @@ export default function DashboardPage() {
                   <AlertDescription>
                     AI identified an increase in user churn risk.
                      <Button variant="link" size="sm" className="p-0 h-auto ml-2">Explore</Button>
-                  </AlertDescription>
-                </Alert>
-                 <Alert>
-                  <CalendarClock className="h-4 w-4" />
-                  <AlertTitle>Upcoming Report</AlertTitle>
-                  <AlertDescription>
-                    "Weekly Sales Summary" is due tomorrow.
-                    <Button variant="link" size="sm" className="p-0 h-auto ml-2">Manage</Button>
                   </AlertDescription>
                 </Alert>
               </div>
