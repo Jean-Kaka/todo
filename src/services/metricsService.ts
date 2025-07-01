@@ -24,7 +24,7 @@ import type { DataSourceCardProps } from "@/components/dashboard/DataSourceCard"
 const mockStats: StatCardProps[] = [
   { title: "Monthly Sales", value: "$45,231.89", icon: DollarSign, change: "+20.1%", changeType: "increase" as const },
   { title: "New Users", value: "+1,234", icon: UserPlus, change: "+15.2%", changeType: "increase" as const },
-  { title: "Recurring Users", value: "8,765", icon: Repeat, change: "+5.7%", changeType: "increase" as const },
+  { title: "Recurring Users", value: "8,765", icon: Repeat, change: "-1.2%", changeType: "decrease" as const },
   { title: "Data Sources", value: "12", icon: Database, change: "+2", changeType: "increase" as const },
 ];
 
