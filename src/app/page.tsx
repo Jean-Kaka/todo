@@ -84,8 +84,8 @@ export default function LandingPage() {
               <Image
                 src="https://placehold.co/1200x675.png"
                 alt="AgentY platform visual explainer"
-                layout="fill"
-                objectFit="cover"
+                fill
+                className="object-cover"
                 data-ai-hint="data flow diagram"
               />
             </div>

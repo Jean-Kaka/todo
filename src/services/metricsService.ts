@@ -74,6 +74,8 @@ const mockInsights: InsightCardProps[] = [
     id: "in1", 
     title: "User Engagement Analysis", 
     description: "Session duration is down 5% week-over-week. Further investigation into user feedback channels is recommended to understand the cause.",
+    chartImage: "https://placehold.co/400x225.png",
+    dataAiHint: "line chart engagement"
   },
   { 
     id: "in2", 
@@ -100,6 +102,8 @@ const mockInsights: InsightCardProps[] = [
     id: "in5", 
     title: "API Usage Spike", 
     description: "The primary data API experienced a 300% spike in requests yesterday at 3:00 PM. The system remained stable.",
+    chartImage: "https://placehold.co/400x225.png",
+    dataAiHint: "graph api usage"
   },
 ];
 

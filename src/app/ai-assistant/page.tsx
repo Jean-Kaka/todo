@@ -248,7 +248,7 @@ export default function AIAssistantPage() {
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex gap-2 max-w-[75%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={msg.sender === 'user' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png?bg=3498db&text=AI"} data-ai-hint={msg.sender === 'user' ? 'profile avatar' : 'AI avatar'}/>
+                      <AvatarImage src={msg.sender === 'user' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png"} data-ai-hint={msg.sender === 'user' ? 'profile avatar' : 'AI avatar'}/>
                       <AvatarFallback>{msg.sender === 'user' ? 'U' : 'AI'}</AvatarFallback>
                     </Avatar>
                     <div className={`p-3 rounded-lg shadow ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card border'}`}>
