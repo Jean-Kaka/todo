@@ -32,8 +32,8 @@ export default function IntegrationsPage() {
 
   return (
     <OnboardingLayout
-      currentStep={6}
-      totalSteps={6}
+      currentStep={7}
+      totalSteps={7}
       title="Almost There!"
       description="Optionally connect your favorite tools. You can always do this later."
     >

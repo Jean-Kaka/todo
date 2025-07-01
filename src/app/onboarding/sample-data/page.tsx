@@ -22,8 +22,8 @@ export default function SampleDataPage() {
 
   return (
     <OnboardingLayout
-      currentStep={4}
-      totalSteps={6}
+      currentStep={5}
+      totalSteps={7}
       title="Ready to Explore?"
       description="We can add a sample dataset to get you started right away."
     >

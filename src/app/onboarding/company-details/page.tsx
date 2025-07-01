@@ -31,13 +31,13 @@ export default function CompanyDetailsPage() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Company Details:", values);
-    router.push("/onboarding/data-sources");
+    router.push("/onboarding/objectives");
   }
 
   return (
     <OnboardingLayout
       currentStep={2}
-      totalSteps={6}
+      totalSteps={7}
       title="Tell us about your company"
       description="This information helps us tailor AgentY to your specific needs."
     >
