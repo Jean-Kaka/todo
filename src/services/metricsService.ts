@@ -70,9 +70,25 @@ const mockDataSources: DataSourceCardProps[] = [
 ];
 
 const mockInsights: InsightCardProps[] = [
-  { id: "in1", title: "Sales up 18% this week", description: "Compared to last week, overall sales have increased significantly.", chartImage: "https://placehold.co/400x225.png", dataAiHint: "bar chart sales" },
-  { id: "in2", title: "New User Sign-ups Peaked", description: "Identified a mid-week surge in new user registrations.", chartImage: "https://placehold.co/400x225.png", dataAiHint: "line chart users" },
-  { id: "in3", title: "Category C has highest engagement", description: "Users spend more time with products in Category C.", chartImage: "https://placehold.co/400x225.png", dataAiHint: "pie chart engagement" },
+  { 
+    id: "in1", 
+    title: "User Engagement Analysis", 
+    description: "Session duration is down 5% week-over-week. Further investigation into user feedback channels is recommended to understand the cause.",
+  },
+  { 
+    id: "in2", 
+    title: "Marketing Campaign Performance", 
+    description: "The 'Summer Sale' campaign is driving the highest conversion rate, while 'Social Media Ads' have the best reach.", 
+    chartImage: "https://placehold.co/400x225.png", 
+    dataAiHint: "bar chart marketing" 
+  },
+  { 
+    id: "in3", 
+    title: "Product Category Breakdown", 
+    description: "Electronics continue to be the top-selling category, followed by Apparel.", 
+    chartImage: "https://placehold.co/400x225.png", 
+    dataAiHint: "pie chart sales" 
+  },
 ];
 
 

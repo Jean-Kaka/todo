@@ -18,15 +18,19 @@ export default function InsightCard({ title, description, chartImage, dataAiHint
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 flex flex-col">
       <CardHeader>
-        <div className="flex items-center gap-2 mb-1">
-          <Lightbulb className="h-5 w-5 text-accent" />
-          <CardTitle className="text-md font-headline">{title}</CardTitle>
+        <div className="flex items-start gap-3">
+          <div className="bg-accent/10 p-2 rounded-full mt-1">
+            <Lightbulb className="h-5 w-5 text-accent" />
+          </div>
+          <div className="flex-1">
+            <CardTitle className="text-lg font-headline">{title}</CardTitle>
+            <CardDescription className="text-sm line-clamp-2 mt-1">{description}</CardDescription>
+          </div>
         </div>
-        <CardDescription className="text-xs">{description}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow">
-        {chartImage && (
-          <div className="aspect-video bg-muted rounded-md overflow-hidden my-2">
+      <CardContent className="flex-grow px-6 pb-6 pt-0">
+        {chartImage ? (
+          <div className="aspect-video bg-muted rounded-md overflow-hidden border">
             <Image
               src={chartImage}
               alt={title || "Insight chart"}
@@ -36,11 +40,14 @@ export default function InsightCard({ title, description, chartImage, dataAiHint
               data-ai-hint={dataAiHint}
             />
           </div>
+        ) : (
+          <div className="text-center text-muted-foreground p-4 bg-muted/50 rounded-md w-full border-l-4 border-accent">
+             <p className="text-sm font-medium">Text-based Insight</p>
+             <p className="text-xs mt-1">Ask the AI Assistant to generate a chart for more details.</p>
+          </div>
         )}
-        {/* Placeholder for actual chart component */}
-        {/* {chartType && chartData && <ActualChartComponent type={chartType} data={chartData} />} */}
       </CardContent>
-      <CardFooter className="gap-2">
+      <CardFooter className="flex items-center gap-2 border-t px-6 py-3">
         <Button variant="ghost" size="sm" className="text-xs">
           <Bookmark className="mr-1 h-3 w-3" /> Bookmark
         </Button>
