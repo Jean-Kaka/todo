@@ -20,8 +20,8 @@ export default function TwoFactorAuthPage() {
 
   return (
     <OnboardingLayout
-      currentStep={6}
-      totalSteps={7}
+      currentStep={7}
+      totalSteps={8}
       title="Secure Your Account"
       description="Set up two-factor authentication (2FA) for an extra layer of security."
     >

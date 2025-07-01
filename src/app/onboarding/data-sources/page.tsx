@@ -43,8 +43,8 @@ export default function DataSourcesPage() {
 
   return (
     <OnboardingLayout
-      currentStep={4}
-      totalSteps={7}
+      currentStep={5}
+      totalSteps={8}
       title="Connect Your Data"
       description="Select all the types of data you plan to work with."
     >

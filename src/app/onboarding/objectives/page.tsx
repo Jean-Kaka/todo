@@ -40,13 +40,13 @@ export default function ObjectivesPage() {
 
   const handleNext = () => {
     console.log("Selected objectives:", selectedObjectives);
-    router.push("/onboarding/data-sources");
+    router.push("/onboarding/kpis");
   };
 
   return (
     <OnboardingLayout
       currentStep={3}
-      totalSteps={7}
+      totalSteps={8}
       title="What are your company's main objectives?"
       description="Select your primary goals. This helps us suggest relevant insights for your business."
     >

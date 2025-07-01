@@ -43,7 +43,7 @@ export default function CompanyDetailsPage() {
   return (
     <OnboardingLayout
       currentStep={2}
-      totalSteps={7}
+      totalSteps={8}
       title="Tell us about your company"
       description="This information helps us tailor AgentY to your specific needs."
     >

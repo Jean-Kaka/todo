@@ -37,7 +37,7 @@ export default function RoleSelectionPage() {
   return (
     <OnboardingLayout
       currentStep={1}
-      totalSteps={7}
+      totalSteps={8}
       title="What's your role?"
       description="This helps us personalize your AgentY experience."
     >
