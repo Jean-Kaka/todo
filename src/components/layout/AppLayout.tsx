@@ -28,6 +28,7 @@ import {
   Briefcase, // Placeholder for AgentY logo
   Settings,
   HelpCircle,
+  Shield,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -50,13 +51,14 @@ const navItems: NavItem[] = [
 const bottomNavItems: NavItem[] = [
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help & Support", icon: HelpCircle },
+  { href: "/super-admin", label: "Super Admin", icon: Shield, headerTitle: "Super Admin Dashboard", headerIcon: Shield },
 ];
 
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const currentNavItem = navItems.find(item => pathname.startsWith(item.href));
+  const currentNavItem = [...navItems, ...bottomNavItems].find(item => pathname.startsWith(item.href));
 
   return (
     <SidebarProvider defaultOpen>
