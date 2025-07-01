@@ -47,7 +47,7 @@ export default function KpisPage() {
     <OnboardingLayout
       currentStep={4}
       totalSteps={8}
-      title="What are your key performance indicators?"
+      title="What are your company's key performance indicators?"
       description="Select the KPIs you're interested in tracking. This helps us configure your dashboards."
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
