@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { DollarSign, TrendingDown, MousePointerClick, Users, Smile, MoreHorizontal } from "lucide-react";
+import { DollarSign, TrendingDown, Users, Smile, MoreHorizontal, Megaphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 
@@ -21,7 +21,7 @@ const kpiOptions: KpiOption[] = [
   { id: "sales_revenue", label: "Sales Revenue", description: "Track revenue, profit margins, and sales growth.", icon: DollarSign },
   { id: "churn_rate", label: "Customer Churn Rate", description: "Analyze the rate at which customers stop doing business with you.", icon: TrendingDown },
   { id: "user_engagement", label: "User Engagement", description: "Measure active users, session duration, and feature adoption.", icon: Users },
-  { id: "conversion_rate", label: "Website Traffic & Conversion", description: "Analyze visitor traffic and conversion rates.", icon: MousePointerClick },
+  { id: "marketing_performance", label: "Marketing Performance", description: "Analyze campaign effectiveness, attribution, and ROI.", icon: Megaphone },
   { id: "csat", label: "Customer Satisfaction", description: "Measure satisfaction with surveys like CSAT and NPS.", icon: Smile },
   { id: "other", label: "Other KPIs", description: "Define your own custom key performance indicators.", icon: MoreHorizontal },
 ];
