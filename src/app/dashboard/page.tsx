@@ -51,19 +51,41 @@ export default function DashboardPage() {
     const fetchDashboardData = async () => {
       setIsLoading(true);
       try {
-        const [statsData, activityData, insightsData, dataSourcesData] = await Promise.all([
+        // Use Promise.allSettled to handle potential errors in individual fetches
+        const results = await Promise.allSettled([
           getDashboardStats(),
           getRecentActivity(),
           getLatestInsights(),
           getDataSourcesSummary()
         ]);
-        setStats(statsData);
-        setActivity(activityData as Activity[]);
-        setInsights(insightsData);
-        setDataSources(dataSourcesData);
+
+        if (results[0].status === 'fulfilled') {
+          setStats(results[0].value);
+        } else {
+          console.error("Failed to fetch dashboard stats:", results[0].reason);
+        }
+
+        if (results[1].status === 'fulfilled') {
+          setActivity(results[1].value as Activity[]);
+        } else {
+          console.error("Failed to fetch recent activity:", results[1].reason);
+        }
+
+        if (results[2].status === 'fulfilled') {
+          setInsights(results[2].value);
+        } else {
+          console.error("Failed to fetch latest insights:", results[2].reason);
+        }
+        
+        if (results[3].status === 'fulfilled') {
+          setDataSources(results[3].value);
+        } else {
+          console.error("Failed to fetch data sources:", results[3].reason);
+        }
+
       } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
-        // Here you could show a toast notification
+        // This catch block is less likely to be hit with Promise.allSettled, but good practice
+        console.error("An unexpected error occurred while fetching dashboard data:", error);
       } finally {
         setIsLoading(false);
       }
