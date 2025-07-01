@@ -89,6 +89,18 @@ const mockInsights: InsightCardProps[] = [
     chartImage: "https://placehold.co/400x225.png", 
     dataAiHint: "pie chart sales" 
   },
+  { 
+    id: "in4", 
+    title: "Customer Churn Risk", 
+    description: "A segment of 50 users who have not logged in for 30 days has been identified as high risk for churn.",
+    chartImage: "https://placehold.co/400x225.png",
+    dataAiHint: "customer list table"
+  },
+  { 
+    id: "in5", 
+    title: "API Usage Spike", 
+    description: "The primary data API experienced a 300% spike in requests yesterday at 3:00 PM. The system remained stable.",
+  },
 ];
 
 

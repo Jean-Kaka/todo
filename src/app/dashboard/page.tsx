@@ -160,9 +160,11 @@ export default function DashboardPage() {
                     <>
                       <Skeleton className="h-[370px]" />
                       <Skeleton className="h-[370px]" />
+                      <Skeleton className="h-[370px]" />
+                      <Skeleton className="h-[370px]" />
                     </>
                 ) : (
-                  insights.slice(0, 2).map(insight => <InsightCard key={insight.id} {...insight} />)
+                  insights.slice(0, 4).map(insight => <InsightCard key={insight.id} {...insight} />)
                 )}
               </div>
             </section>
