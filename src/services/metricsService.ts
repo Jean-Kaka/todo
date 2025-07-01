@@ -70,40 +70,58 @@ const mockDataSources: DataSourceCardProps[] = [
 ];
 
 const mockInsights: InsightCardProps[] = [
-  { 
-    id: "in1", 
-    title: "User Engagement Analysis", 
-    description: "Session duration is down 5% week-over-week. Further investigation into user feedback channels is recommended to understand the cause.",
-    chartImage: "https://placehold.co/400x225.png",
-    dataAiHint: "analytics graph"
+  {
+    id: "in1",
+    title: "User Engagement Drops",
+    description: "Weekly active users dropped by 8% in the last week. The steepest decline was seen on mobile devices.",
+    chartType: "line",
+    chartData: [
+      { name: "W1", value: 550 },
+      { name: "W2", value: 575 },
+      { name: "W3", value: 520 },
+      { name: "W4", value: 480 },
+    ],
+    chartConfig: {
+        value: { label: "Active Users", color: "hsl(var(--chart-2))" }
+    }
   },
-  { 
-    id: "in2", 
-    title: "Marketing Campaign Performance", 
-    description: "The 'Summer Sale' campaign is driving the highest conversion rate, while 'Social Media Ads' have the best reach.", 
-    chartImage: "https://placehold.co/400x225.png", 
-    dataAiHint: "marketing results" 
+  {
+    id: "in2",
+    title: "Marketing Campaign ROI",
+    description: "The 'Summer Sale' campaign shows a 25% higher ROI compared to 'Social Media Ads'.",
+    chartType: "bar",
+    chartData: [
+        { name: "Summer", value: 1.8 },
+        { name: "Social", value: 1.2 },
+        { name: "Email", value: 1.5 },
+    ],
+    chartConfig: {
+        value: { label: "ROI", color: "hsl(var(--chart-1))" }
+    }
   },
-  { 
-    id: "in3", 
-    title: "Product Category Breakdown", 
-    description: "Electronics continue to be the top-selling category, followed by Apparel.", 
-    chartImage: "https://placehold.co/400x225.png", 
-    dataAiHint: "sales analysis" 
+  {
+    id: "in3",
+    title: "Top Product Categories",
+    description: "Electronics and Apparel make up 65% of all sales this month.",
+    chartType: "pie",
+    chartData: [
+        { name: 'Electronics', value: 400, fill: 'hsl(var(--chart-1))' },
+        { name: 'Apparel', value: 250, fill: 'hsl(var(--chart-2))' },
+        { name: 'Home', value: 150, fill: 'hsl(var(--chart-3))' },
+        { name: 'Other', value: 200, fill: 'hsl(var(--chart-4))' },
+    ],
+    chartConfig: {
+        value: { label: 'Sales' },
+        Electronics: { label: 'Electronics' },
+        Apparel: { label: 'Apparel' },
+        Home: { label: 'Home Goods' },
+        Other: { label: 'Other' },
+    }
   },
-  { 
-    id: "in4", 
-    title: "Customer Churn Risk", 
-    description: "A segment of 50 users who have not logged in for 30 days has been identified as high risk for churn.",
-    chartImage: "https://placehold.co/400x225.png",
-    dataAiHint: "customer data"
-  },
-  { 
-    id: "in5", 
-    title: "API Usage Spike", 
-    description: "The primary data API experienced a 300% spike in requests yesterday at 3:00 PM. The system remained stable.",
-    chartImage: "https://placehold.co/400x225.png",
-    dataAiHint: "api data"
+  {
+    id: "in4",
+    title: "Customer Churn Risk Alert",
+    description: "A segment of 50 users who have not logged in for 30 days has been identified as high risk for churn. Consider a re-engagement campaign.",
   },
 ];
 
