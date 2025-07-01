@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, ShieldCheck, Code, Megaphone, ClipboardList, GraduationCap, Crown, UserSquare, Cog } from "lucide-react";
+import { Briefcase, ShieldCheck, Code, Megaphone, ClipboardList, GraduationCap, Crown, UserSquare, Cog, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const roles = [
@@ -19,6 +19,7 @@ const roles = [
   { id: "data_analyst", name: "Data Analyst", icon: Briefcase, description: "Focus on data exploration and visualization." },
   { id: "marketing_specialist", name: "Marketing Specialist", icon: Megaphone, description: "Analyze campaign performance and customer behavior." },
   { id: "student", name: "Student / Researcher", icon: GraduationCap, description: "Explore datasets for academic or personal projects." },
+  { id: "other", name: "Other", icon: User, description: "For roles not listed above." },
 ];
 
 export default function RoleSelectionPage() {
