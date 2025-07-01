@@ -10,12 +10,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Building, Users, Factory } from "lucide-react";
+import { Building, Users, Factory, Briefcase, Globe } from "lucide-react";
 
 const formSchema = z.object({
   companyName: z.string().min(2, "Company name must be at least 2 characters."),
   companySize: z.string().min(1, "Please select a company size."),
   industry: z.string().min(1, "Please select an industry."),
+  department: z.string().optional(),
+  website: z.string().url("Please enter a valid URL.").optional().or(z.literal('')),
 });
 
 export default function CompanyDetailsPage() {
@@ -26,6 +28,8 @@ export default function CompanyDetailsPage() {
       companyName: "",
       companySize: "",
       industry: "",
+      department: "",
+      website: "",
     },
   });
 
@@ -92,6 +96,32 @@ export default function CompanyDetailsPage() {
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="department"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><Briefcase className="h-4 w-4"/>Department (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Marketing, Sales, Engineering" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><Globe className="h-4 w-4"/>Company Website (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://yourcompany.com" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
