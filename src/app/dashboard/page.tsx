@@ -6,7 +6,7 @@ import DataSourceCard, { DataSourceCardProps } from "@/components/dashboard/Data
 import InsightCard, { InsightCardProps } from "@/components/dashboard/InsightCard";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { PlusCircle, MessageCircle, BarChartHorizontalBig, AlertTriangle, CalendarClock, Bell, Lightbulb, Database, Users, Timer } from "lucide-react";
+import { PlusCircle, MessageCircle, BarChartHorizontalBig, AlertTriangle, CalendarClock, Bell, Database, DollarSign, UserPlus, Repeat } from "lucide-react";
 import Link from "next/link";
 import StatCard from "@/components/dashboard/StatCard";
 import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
@@ -25,10 +25,10 @@ const mockInsights: InsightCardProps[] = [
 ];
 
 const mockStats = [
-  { title: "Insights Generated", value: "1,254", icon: Lightbulb, change: "+20.1%", changeType: "increase" as const },
+  { title: "Monthly Sales", value: "$45,231.89", icon: DollarSign, change: "+20.1%", changeType: "increase" as const },
+  { title: "New Users", value: "+1,234", icon: UserPlus, change: "+15.2%", changeType: "increase" as const },
+  { title: "Recurring Users", value: "8,765", icon: Repeat, change: "+5.7%", changeType: "increase" as const },
   { title: "Data Sources", value: "12", icon: Database, change: "+2", changeType: "increase" as const },
-  { title: "Active Users", value: "23", icon: Users, change: "-1.5%", changeType: "decrease" as const },
-  { title: "Avg. Query Time", value: "2.1s", icon: Timer, change: "+0.2s", changeType: "decrease" as const },
 ];
 
 
