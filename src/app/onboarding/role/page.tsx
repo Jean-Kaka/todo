@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, ShieldCheck, Code, Megaphone, ClipboardList, GraduationCap } from "lucide-react";
+import { Briefcase, ShieldCheck, Code, Megaphone, ClipboardList, GraduationCap, Crown, UserSquare, Cog } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const roles = [
@@ -16,6 +16,9 @@ const roles = [
   { id: "marketing_specialist", name: "Marketing Specialist", icon: Megaphone, description: "Analyze campaign performance and customer behavior." },
   { id: "product_manager", name: "Product Manager", icon: ClipboardList, description: "Track feature adoption and user engagement metrics." },
   { id: "student", name: "Student / Researcher", icon: GraduationCap, description: "Explore datasets for academic or personal projects." },
+  { id: "ceo", name: "CEO", icon: Crown, description: "High-level business overview and strategic decision making." },
+  { id: "general_manager", name: "General Manager", icon: UserSquare, description: "Manage overall business operations and performance." },
+  { id: "operations_manager", name: "Operations Manager", icon: Cog, description: "Optimize processes, supply chain, and daily operations." },
 ];
 
 export default function RoleSelectionPage() {
