@@ -12,14 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Filter, Tag, FolderPlus, ListFilter } from "lucide-react";
+import { Search, Filter, Tag, FolderPlus, ListFilter, BarChart2 } from "lucide-react";
 import { useState, useMemo } from "react";
 
 const mockInsights: ReportCardProps[] = [
-  { id: "ih1", title: "Weekly Sales Performance", type: "chart", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "sales dashboard chart", tags: ["sales", "weekly", "performance"], folder: "Sales Reports", lastModified: "Oct 26, 2023", createdBy: "AI Assistant" },
+  { id: "ih1", title: "Weekly Sales Performance", type: "chart", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "sales dashboard", tags: ["sales", "weekly", "performance"], folder: "Sales Reports", lastModified: "Oct 26, 2023", createdBy: "AI Assistant" },
   { id: "ih2", title: "Customer Segmentation Analysis", type: "summary", contentPreviewText: "Customers are primarily segmented into three groups based on purchasing behavior and demographics. Group A (High Value) shows strong loyalty...", tags: ["customers", "segmentation", "marketing"], lastModified: "Oct 24, 2023", createdBy: "Data Analyst" },
-  { id: "ih3", title: "Top Performing Marketing Campaigns Q3", type: "table", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "marketing campaign table", tags: ["marketing", "q3", "campaigns"], folder: "Marketing Insights", lastModified: "Oct 20, 2023", createdBy: "AI Assistant" },
-  { id: "ih4", title: "Website Traffic Source Breakdown", type: "chart", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "traffic source pie chart", tags: ["website", "analytics", "traffic"], lastModified: "Oct 15, 2023", createdBy: "Jane Doe" },
+  { id: "ih3", title: "Top Performing Marketing Campaigns Q3", type: "table", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "marketing analytics", tags: ["marketing", "q3", "campaigns"], folder: "Marketing Insights", lastModified: "Oct 20, 2023", createdBy: "AI Assistant" },
+  { id: "ih4", title: "Website Traffic Source Breakdown", type: "chart", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "traffic analytics", tags: ["website", "analytics", "traffic"], lastModified: "Oct 15, 2023", createdBy: "Jane Doe" },
 ];
 
 const allTags = Array.from(new Set(mockInsights.flatMap(i => i.tags)));

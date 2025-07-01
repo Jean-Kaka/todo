@@ -75,35 +75,35 @@ const mockInsights: InsightCardProps[] = [
     title: "User Engagement Analysis", 
     description: "Session duration is down 5% week-over-week. Further investigation into user feedback channels is recommended to understand the cause.",
     chartImage: "https://placehold.co/400x225.png",
-    dataAiHint: "line chart engagement"
+    dataAiHint: "analytics graph"
   },
   { 
     id: "in2", 
     title: "Marketing Campaign Performance", 
     description: "The 'Summer Sale' campaign is driving the highest conversion rate, while 'Social Media Ads' have the best reach.", 
     chartImage: "https://placehold.co/400x225.png", 
-    dataAiHint: "bar chart marketing" 
+    dataAiHint: "marketing results" 
   },
   { 
     id: "in3", 
     title: "Product Category Breakdown", 
     description: "Electronics continue to be the top-selling category, followed by Apparel.", 
     chartImage: "https://placehold.co/400x225.png", 
-    dataAiHint: "pie chart sales" 
+    dataAiHint: "sales analysis" 
   },
   { 
     id: "in4", 
     title: "Customer Churn Risk", 
     description: "A segment of 50 users who have not logged in for 30 days has been identified as high risk for churn.",
     chartImage: "https://placehold.co/400x225.png",
-    dataAiHint: "customer list table"
+    dataAiHint: "customer data"
   },
   { 
     id: "in5", 
     title: "API Usage Spike", 
     description: "The primary data API experienced a 300% spike in requests yesterday at 3:00 PM. The system remained stable.",
     chartImage: "https://placehold.co/400x225.png",
-    dataAiHint: "graph api usage"
+    dataAiHint: "api data"
   },
 ];
 

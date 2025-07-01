@@ -54,7 +54,7 @@ export default function AIAssistantPage() {
     const mockHistory: ChatSession[] = [
       { id: "chat1", title: "Sales trends Q1", timestamp: new Date(Date.now() - 86400000), messages: [
         { id: "m1", sender: "user", text: "Show me sales trends for Q1.", timestamp: new Date(Date.now() - 86400000) },
-        { id: "m2", sender: "ai", text: "Sales increased by 15% in Q1. Here's a breakdown:", chart: { type: 'bar', data: {}, image: 'https://placehold.co/300x150.png', dataAiHint: 'sales trend chart' }, timestamp: new Date(Date.now() - 86400000) }
+        { id: "m2", sender: "ai", text: "Sales increased by 15% in Q1. Here's a breakdown:", chart: { type: 'bar', data: {}, image: 'https://placehold.co/300x150.png', dataAiHint: 'sales chart' }, timestamp: new Date(Date.now() - 86400000) }
       ]},
       { id: "chat2", title: "Top products by region", timestamp: new Date(Date.now() - 172800000), messages: [] },
     ];
@@ -112,9 +112,9 @@ export default function AIAssistantPage() {
       };
       // This is a mock: in a real app, the AI would return structured data for charts/tables
       if (aiResponse.answer.toLowerCase().includes("sales trend")) {
-        aiMessage.chart = { type: 'bar', data: {}, image: 'https://placehold.co/300x150.png', dataAiHint: 'sales trend chart' };
+        aiMessage.chart = { type: 'bar', data: {}, image: 'https://placehold.co/300x150.png', dataAiHint: 'sales chart' };
       } else if (aiResponse.answer.toLowerCase().includes("top products")) {
-         aiMessage.table = { headers: ["Product", "Sales"], rows: [["Product A", 1500], ["Product B", 1200]], dataAiHint: 'product sales table'};
+         aiMessage.table = { headers: ["Product", "Sales"], rows: [["Product A", 1500], ["Product B", 1200]], dataAiHint: 'product sales'};
       }
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -248,14 +248,14 @@ export default function AIAssistantPage() {
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex gap-2 max-w-[75%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={msg.sender === 'user' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png"} data-ai-hint={msg.sender === 'user' ? 'profile avatar' : 'AI avatar'}/>
+                      <AvatarImage src={msg.sender === 'user' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png"} data-ai-hint={msg.sender === 'user' ? 'user profile' : 'robot avatar'}/>
                       <AvatarFallback>{msg.sender === 'user' ? 'U' : 'AI'}</AvatarFallback>
                     </Avatar>
                     <div className={`p-3 rounded-lg shadow ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card border'}`}>
                       <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
                       {msg.chart?.image && (
                         <div className="mt-2 rounded-md overflow-hidden border">
-                          <Image src={msg.chart.image} alt="Chart" width={300} height={150} data-ai-hint={msg.chart.dataAiHint || "data chart"} />
+                          <Image src={msg.chart.image} alt="Chart" width={300} height={150} data-ai-hint={msg.chart.dataAiHint || "analytics chart"} />
                         </div>
                       )}
                       {msg.table && (

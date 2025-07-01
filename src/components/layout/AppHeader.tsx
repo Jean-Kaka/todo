@@ -43,7 +43,7 @@ export function AppHeader({ title, Icon }: AppHeaderProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar>
-                <AvatarImage src="https://placehold.co/40x40.png" alt="User" data-ai-hint="profile avatar" />
+                <AvatarImage src="https://placehold.co/40x40.png" alt="User" data-ai-hint="user profile" />
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
             </Button>

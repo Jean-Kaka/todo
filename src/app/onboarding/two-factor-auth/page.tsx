@@ -33,7 +33,7 @@ export default function TwoFactorAuthPage() {
                 width={160}
                 height={160}
                 className="rounded-md"
-                data-ai-hint="qr code"
+                data-ai-hint="security technology"
             />
         </div>
         <p className="text-sm text-muted-foreground max-w-xs">

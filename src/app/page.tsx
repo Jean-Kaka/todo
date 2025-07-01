@@ -86,7 +86,7 @@ export default function LandingPage() {
                 alt="AgentY platform visual explainer"
                 fill
                 className="object-cover"
-                data-ai-hint="data flow diagram"
+                data-ai-hint="data dashboard"
               />
             </div>
           </div>
