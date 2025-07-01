@@ -10,7 +10,8 @@ import {
   Bot, 
   CheckCircle,
   AlertTriangle,
-  Server
+  Server,
+  TrendingUp,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -86,6 +87,16 @@ const systemStatus = [
     { service: "Real-time Sync", status: "Operational", icon: CheckCircle, color: "text-green-500" },
 ];
 
+const onboardingFunnelData = [
+    { name: 'Register', value: 1482 },
+    { name: 'Role', value: 1401 },
+    { name: 'Company', value: 1310 },
+    { name: 'Data Source', value: 1250 },
+    { name: '2FA Setup', value: 1050 },
+    { name: 'Dashboard', value: 975 },
+];
+const funnelChartConfig = { value: { label: "Users", color: "hsl(var(--chart-3))" } } satisfies ChartConfig;
+
 export default function SuperAdminDashboardPage() {
   return (
     <AppLayout>
@@ -142,8 +153,8 @@ export default function SuperAdminDashboardPage() {
         </section>
 
         {/* Third Row: Detailed Breakdowns */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          <Card className="lg:col-span-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+          <Card className="lg:col-span-2 xl:col-span-2">
             <CardHeader>
               <CardTitle>Recent User Registrations</CardTitle>
               <CardDescription>A list of the newest users on the platform.</CardDescription>
@@ -172,7 +183,7 @@ export default function SuperAdminDashboardPage() {
               </Table>
             </CardContent>
           </Card>
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-1 xl:col-span-1">
             <CardHeader>
               <CardTitle>Data Source Types</CardTitle>
               <CardDescription>Distribution of all connected data sources.</CardDescription>
@@ -189,6 +200,36 @@ export default function SuperAdminDashboardPage() {
                   <ChartLegend content={<ChartLegendContent nameKey="type" />} className="-translate-y-[1rem] flex-wrap gap-2 [&>*]:basis-1/2 [&>*]:justify-center" />
                 </PieChart>
               </ChartContainer>
+            </CardContent>
+          </Card>
+          <Card className="lg:col-span-1 xl:col-span-1">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5"/> Onboarding Funnel</CardTitle>
+              <CardDescription>User progression through sign-up steps.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ChartContainer config={funnelChartConfig} className="h-[250px] w-full">
+                    <BarChart
+                        accessibilityLayer
+                        data={onboardingFunnelData}
+                        layout="vertical"
+                        margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
+                    >
+                        <CartesianGrid horizontal={false} />
+                        <YAxis
+                        dataKey="name"
+                        type="category"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        width={80}
+                        className="text-xs"
+                        />
+                        <XAxis dataKey="value" type="number" hide />
+                        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                        <Bar dataKey="value" layout="vertical" fill="var(--color-value)" radius={4} />
+                    </BarChart>
+                </ChartContainer>
             </CardContent>
           </Card>
         </div>
