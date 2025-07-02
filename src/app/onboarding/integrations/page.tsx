@@ -27,7 +27,7 @@ export default function IntegrationsPage() {
   const handleFinish = () => {
     // Save integration preferences
     console.log("Integration preferences saved (mock).");
-    router.push("/dashboard"); // Navigate to dashboard
+    router.push("/onboarding/constructing-dashboard"); // Navigate to constructing dashboard page
   };
 
   return (
