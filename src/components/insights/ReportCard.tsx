@@ -28,8 +28,8 @@ export interface ReportCardProps {
 }
 
 const typeIcons: Record<ReportCardProps["type"], LucideIcon> = {
-  chart: BarChart2, // Generic chart, could be more specific if type is refined
-  table: FileText, // Using FileText as table icon might not be ideal, consider `Table` icon from lucide if available or custom
+  chart: BarChart2,
+  table: FileText,
   summary: FileText,
 };
 
@@ -63,12 +63,16 @@ export default function ReportCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem><Edit2 className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+              <DropdownMenuItem><Edit2 className="mr-2 h-4 w-4" /> Edit Details</DropdownMenuItem>
+              <DropdownMenuItem><Share2 className="mr-2 h-4 w-4" /> Share</DropdownMenuItem>
+              <DropdownMenuItem><Download className="mr-2 h-4 w-4" /> Export</DropdownMenuItem>
+              <DropdownMenuItem><CalendarPlus className="mr-2 h-4 w-4" /> Schedule</DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem><FolderOpen className="mr-2 h-4 w-4" /> Move to Folder</DropdownMenuItem>
               <DropdownMenuItem><Tag className="mr-2 h-4 w-4" /> Manage Tags</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
-                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                <Trash2 className="mr-2 h-4 w-4" /> Delete Insight
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -98,20 +102,15 @@ export default function ReportCard({
             <p>No preview available</p>
           </div>
         )}
-         <div className="mt-3 space-y-1 text-xs text-muted-foreground">
-            <p>Last modified: {lastModified} by {createdBy}</p>
-            {folder && <p>Folder: <Badge variant="outline">{folder}</Badge></p>}
-         </div>
-
       </CardContent>
       <CardFooter className="flex-col items-start gap-3 pt-4 border-t">
-        <div className="flex flex-wrap gap-1 mb-2">
-            {tags.map(tag => <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>)}
+        <div className="space-y-1 text-xs text-muted-foreground w-full">
+            <div className="flex justify-between"><span>Last Modified</span><span className="font-medium">{lastModified}</span></div>
+            <div className="flex justify-between"><span>Created By</span><span className="font-medium">{createdBy}</span></div>
+            {folder && <div className="flex justify-between items-center"><span>Folder</span><Badge variant="outline">{folder}</Badge></div>}
         </div>
-        <div className="flex w-full gap-2 justify-end">
-          <Button variant="outline" size="sm"><Download className="mr-1 h-4 w-4" /> Export</Button>
-          <Button variant="outline" size="sm"><Share2 className="mr-1 h-4 w-4" /> Share</Button>
-          <Button variant="outline" size="sm"><CalendarPlus className="mr-1 h-4 w-4" /> Schedule</Button>
+        <div className="flex flex-wrap gap-1 w-full pt-3 mt-3 border-t">
+            {tags.map(tag => <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>)}
         </div>
       </CardFooter>
     </Card>

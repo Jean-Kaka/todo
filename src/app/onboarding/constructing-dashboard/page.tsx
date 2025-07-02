@@ -22,9 +22,9 @@ export default function ConstructingDashboardPage() {
   useEffect(() => {
     const progressInterval = setInterval(() => {
         setProgress(prev => {
-            if (prev >= 100) {
+            if (prev >= 30000) {
                 clearInterval(progressInterval);
-                return 100;
+                return 30000;
             }
             return prev + 1;
         });

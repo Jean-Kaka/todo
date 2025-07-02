@@ -12,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Filter, Tag, FolderPlus, ListFilter, BarChart2 } from "lucide-react";
+import { Search, Tag, ListFilter, BarChart2, Folder, PlusCircle } from "lucide-react";
 import { useState, useMemo } from "react";
+import Link from 'next/link';
 
 const mockInsights: ReportCardProps[] = [
   { id: "ih1", title: "Weekly Sales Performance", type: "chart", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "sales dashboard", tags: ["sales", "weekly", "performance"], folder: "Sales Reports", lastModified: "Oct 26, 2023", createdBy: "AI Assistant" },
@@ -45,18 +46,28 @@ export default function InsightHubPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
-           <div className="relative w-full md:max-w-md">
+      <div className="space-y-8">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 className="text-3xl font-bold font-headline">Insight Hub</h1>
+                <p className="text-muted-foreground mt-1">Browse, search, and manage all your saved insights and reports.</p>
+            </div>
+            <div className="flex gap-2">
+                 <Button asChild><Link href="/ai-assistant"><PlusCircle className="mr-2 h-4 w-4" /> Generate Insight</Link></Button>
+            </div>
+        </header>
+        
+        <div className="p-4 border rounded-lg bg-card flex flex-col md:flex-row gap-4">
+           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Search insights by title, description..."
+              placeholder="Search insights..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
-          <div className="flex flex-wrap gap-2 w-full md:w-auto">
+          <div className="flex flex-wrap gap-2">
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-full sm:w-auto md:w-[150px]">
                 <ListFilter className="h-4 w-4 mr-2 text-muted-foreground"/>
@@ -81,7 +92,7 @@ export default function InsightHubPage() {
             </Select>
              <Select value={filterFolder} onValueChange={setFilterFolder}>
               <SelectTrigger className="w-full sm:w-auto md:w-[180px]">
-                <FolderPlus className="h-4 w-4 mr-2 text-muted-foreground"/>
+                <Folder className="h-4 w-4 mr-2 text-muted-foreground"/>
                 <SelectValue placeholder="Filter by folder" />
               </SelectTrigger>
               <SelectContent>
@@ -92,32 +103,27 @@ export default function InsightHubPage() {
             </Select>
           </div>
         </div>
-        
-        <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold font-headline">Saved Insights & Reports</h2>
-            <div>
-                 <Button variant="outline"><FolderPlus className="mr-2 h-4 w-4" /> New Folder</Button>
-                 {/* <Button className="ml-2"><PlusCircle className="mr-2 h-4 w-4" /> Create Report</Button> */}
-            </div>
-        </div>
 
-
-        {filteredInsights.length === 0 && (
-           <div className="text-center py-12">
-            <BarChart2 className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-2 text-xl font-semibold">No Insights Found</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Try adjusting your filters or save insights from the AI Assistant.
-            </p>
-          </div>
-        )}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredInsights.map(insight => (
-            <ReportCard key={insight.id} {...insight} />
-          ))}
-        </div>
-         <div className="text-sm text-muted-foreground mt-4">
-          Showing {filteredInsights.length} of {mockInsights.length} insights.
+        <div>
+            <h2 className="text-xl font-semibold font-headline mb-4">
+                {filteredInsights.length} {filteredInsights.length === 1 ? 'Insight' : 'Insights'} Found
+            </h2>
+            {filteredInsights.length === 0 ? (
+               <div className="text-center py-16 border-2 border-dashed rounded-lg">
+                <BarChart2 className="mx-auto h-12 w-12 text-muted-foreground" />
+                <h3 className="mt-4 text-xl font-semibold">No Insights Found</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Try adjusting your filters or generate a new insight from the AI Assistant.
+                </p>
+                <Button className="mt-6" asChild><Link href="/ai-assistant">Generate Insight</Link></Button>
+              </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredInsights.map(insight => (
+                    <ReportCard key={insight.id} {...insight} />
+                  ))}
+                </div>
+            )}
         </div>
       </div>
     </AppLayout>

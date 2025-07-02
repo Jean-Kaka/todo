@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Database, PlugZap, Search, Filter, Edit3, Trash2, MessageSquarePlus, Eye } from "lucide-react";
+import { FileText, Database, PlugZap, Search, Filter, Edit3, Trash2, MessageSquarePlus, Bot, PlusCircle } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo } from "react";
@@ -78,12 +78,23 @@ export default function KnowledgeBasePage() {
 
   return (
     <AppLayout>
-      <div className="space-y-6">
+      <div className="space-y-8">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 className="text-3xl font-bold font-headline">Knowledge Base</h1>
+                <p className="text-muted-foreground mt-1">Manage and explore all your connected data sources.</p>
+            </div>
+            <Button asChild>
+                <Link href="/upload">
+                <PlusCircle className="mr-2 h-4 w-4" /> Add Data Source
+                </Link>
+            </Button>
+        </header>
         <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
           <div className="relative w-full md:max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Search sources by name, metadata, schema..."
+              placeholder="Search sources..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -127,7 +138,7 @@ export default function KnowledgeBasePage() {
                 <TableHead>Tags</TableHead>
                 <TableHead>Ownership</TableHead>
                 <TableHead>Freshness</TableHead>
-                <TableHead className="text-right w-[150px]">Actions</TableHead>
+                <TableHead className="text-right w-[170px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -145,7 +156,11 @@ export default function KnowledgeBasePage() {
                     <TableCell>
                       <Icon className="h-5 w-5 text-primary" title={ds.type}/>
                     </TableCell>
-                    <TableCell className="font-medium">{ds.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <Link href={`/knowledge-base/${ds.id}`} className="hover:underline text-primary">
+                          {ds.name}
+                      </Link>
+                    </TableCell>
                     <TableCell className="text-xs text-muted-foreground">{ds.metadata}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{ds.schema}</TableCell>
                     <TableCell>
@@ -157,8 +172,10 @@ export default function KnowledgeBasePage() {
                     <TableCell className="text-xs text-muted-foreground">{ds.freshness}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-1 justify-end">
-                        <Button variant="ghost" size="icon" className="h-7 w-7" title="View Details">
-                          <Eye className="h-4 w-4" />
+                        <Button asChild variant="ghost" size="icon" className="h-7 w-7" title={`Ask AI about the ${ds.name} source`}>
+                            <Link href={`/ai-assistant?query=Tell me about the ${ds.name} data source`}>
+                                <Bot className="h-4 w-4" />
+                            </Link>
                         </Button>
                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Add Note/Comment">
                            <MessageSquarePlus className="h-4 w-4" />
