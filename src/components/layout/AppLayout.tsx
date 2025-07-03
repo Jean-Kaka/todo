@@ -73,13 +73,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarMenu>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link href={item.href} legacyBehavior passHref>
+                <Link href={item.href} asChild>
                   <SidebarMenuButton
-                    asChild
                     isActive={pathname.startsWith(item.href)}
                     tooltip={item.label}
                   >
-                    <a><item.icon /> <span className="group-data-[collapsible=icon]:hidden">{item.label}</span></a>
+                    <item.icon /> <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -91,13 +90,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
            <SidebarMenu>
             {bottomNavItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link href={item.href} legacyBehavior passHref>
+                <Link href={item.href} asChild>
                   <SidebarMenuButton
-                    asChild
                     isActive={pathname.startsWith(item.href)}
                     tooltip={item.label}
                   >
-                    <a><item.icon /> <span className="group-data-[collapsible=icon]:hidden">{item.label}</span></a>
+                    <item.icon /> <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
