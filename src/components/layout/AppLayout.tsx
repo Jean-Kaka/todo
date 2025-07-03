@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
 ];
 
 const bottomNavItems: NavItem[] = [
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/settings", label: "Settings", icon: Settings, headerTitle: "Settings", headerIcon: Settings },
   { href: "/help", label: "Help & Support", icon: HelpCircle },
   { href: "/super-admin", label: "Super Admin", icon: Shield, headerTitle: "Super Admin Dashboard", headerIcon: Shield },
 ];
