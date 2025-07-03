@@ -17,11 +17,77 @@ import { useState, useMemo } from "react";
 import Link from 'next/link';
 
 const mockInsights: ReportCardProps[] = [
-  { id: "ih1", title: "Weekly Sales Performance", type: "chart", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "sales dashboard", tags: ["sales", "weekly", "performance"], folder: "Sales Reports", lastModified: "Oct 26, 2023", createdBy: "AI Assistant" },
-  { id: "ih2", title: "Customer Segmentation Analysis", type: "summary", contentPreviewText: "Customers are primarily segmented into three groups based on purchasing behavior and demographics. Group A (High Value) shows strong loyalty...", tags: ["customers", "segmentation", "marketing"], lastModified: "Oct 24, 2023", createdBy: "Data Analyst" },
-  { id: "ih3", title: "Top Performing Marketing Campaigns Q3", type: "table", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "marketing analytics", tags: ["marketing", "q3", "campaigns"], folder: "Marketing Insights", lastModified: "Oct 20, 2023", createdBy: "AI Assistant" },
-  { id: "ih4", title: "Website Traffic Source Breakdown", type: "chart", contentPreviewImage: "https://placehold.co/400x225.png", dataAiHint: "traffic analytics", tags: ["website", "analytics", "traffic"], lastModified: "Oct 15, 2023", createdBy: "Jane Doe" },
+  {
+    id: "ih1",
+    title: "Weekly Sales Performance",
+    type: "chart",
+    chartType: "bar",
+    chartData: [
+      { name: "W1", value: 400 },
+      { name: "W2", value: 300 },
+      { name: "W3", value: 500 },
+      { name: "W4", value: 450 },
+    ],
+    chartConfig: { value: { label: "Sales", color: "hsl(var(--chart-1))" } },
+    dataAiHint: "sales dashboard",
+    tags: ["sales", "weekly", "performance"],
+    folder: "Sales Reports",
+    lastModified: "Oct 26, 2023",
+    createdBy: "AI Assistant",
+  },
+  {
+    id: "ih2",
+    title: "Customer Segmentation Analysis",
+    type: "summary",
+    contentPreviewText:
+      "Customers are primarily segmented into three groups based on purchasing behavior and demographics. Group A (High Value) shows strong loyalty...",
+    tags: ["customers", "segmentation", "marketing"],
+    lastModified: "Oct 24, 2023",
+    createdBy: "Data Analyst",
+  },
+  {
+    id: "ih3",
+    title: "Top Performing Marketing Campaigns Q3",
+    type: "table",
+    chartType: "pie",
+    chartData: [
+      { name: "Social", value: 40, fill: "hsl(var(--chart-1))" },
+      { name: "SEO", value: 25, fill: "hsl(var(--chart-2))" },
+      { name: "Email", value: 35, fill: "hsl(var(--chart-3))" },
+    ],
+    chartConfig: {
+      value: { label: "Leads" },
+      Social: { label: "Social Media" },
+      SEO: { label: "SEO" },
+      Email: { label: "Email" },
+    },
+    dataAiHint: "marketing analytics",
+    tags: ["marketing", "q3", "campaigns"],
+    folder: "Marketing Insights",
+    lastModified: "Oct 20, 2023",
+    createdBy: "AI Assistant",
+  },
+  {
+    id: "ih4",
+    title: "Website Traffic Source Breakdown",
+    type: "chart",
+    chartType: "line",
+    chartData: [
+      { name: "Jan", value: 1200 },
+      { name: "Feb", value: 1500 },
+      { name: "Mar", value: 1300 },
+      { name: "Apr", value: 1800 },
+    ],
+    chartConfig: {
+      value: { label: "Visitors", color: "hsl(var(--chart-2))" },
+    },
+    dataAiHint: "traffic analytics",
+    tags: ["website", "analytics", "traffic"],
+    lastModified: "Oct 15, 2023",
+    createdBy: "Jane Doe",
+  },
 ];
+
 
 const allTags = Array.from(new Set(mockInsights.flatMap(i => i.tags)));
 const allFolders = Array.from(new Set(mockInsights.map(i => i.folder).filter(Boolean) as string[]));
