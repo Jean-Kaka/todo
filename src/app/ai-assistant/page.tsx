@@ -7,14 +7,30 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, MessageSquare, History, Bookmark, ThumbsUp, ThumbsDown, Lightbulb, Loader2 } from "lucide-react";
-import Image from "next/image";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Send, MessageSquare, History, Bookmark, Lightbulb, Loader2, Bot, User } from "lucide-react";
 import { answerDataQuestions, AnswerDataQuestionsInput, AnswerDataQuestionsOutput } from '@/ai/flows/answer-data-questions';
 import { getSmartSuggestions, SmartSuggestionsInput, SmartSuggestionsOutput } from '@/ai/flows/smart-suggestions';
 import { bookmarkInsight, BookmarkInsightInput, BookmarkInsightOutput } from '@/ai/flows/bookmark-insights';
 import { useToast } from "@/hooks/use-toast";
-
+import {
+  Bar,
+  BarChart,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  Cell,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 interface Message {
   id: string;
@@ -22,8 +38,8 @@ interface Message {
   text: string;
   timestamp: Date;
   insightId?: string; // For AI messages that can be bookmarked
-  chart?: { type: string; data: any; image?: string; dataAiHint?: string }; // Placeholder for chart data or image
-  table?: { headers: string[]; rows: (string | number)[][]; dataAiHint?: string }; // Placeholder for table data
+  chart?: { type: string; data: any[]; config: ChartConfig };
+  table?: { headers: string[]; rows: (string | number)[][] };
 }
 
 interface ChatSession {
@@ -32,6 +48,60 @@ interface ChatSession {
   timestamp: Date;
   messages: Message[];
 }
+
+const renderChart = (
+    chartType: string,
+    chartData: any[],
+    chartConfig: ChartConfig
+  ) => {
+    if (!chartData || !chartConfig) return null;
+
+    const dataKey = Object.keys(chartConfig)[0];
+    if (!dataKey) return null; // Ensure there's a key to use
+
+    switch (chartType) {
+      case "bar":
+        return (
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} fontSize={10} />
+              <YAxis tickLine={false} axisLine={false} tickMargin={8} fontSize={10}/>
+              <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+              <Bar dataKey={dataKey} fill={`var(--color-${dataKey})`} radius={4} />
+            </BarChart>
+          </ChartContainer>
+        );
+      case "line":
+        return (
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <LineChart accessibilityLayer data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} fontSize={10} />
+               <YAxis tickLine={false} axisLine={false} tickMargin={8} fontSize={10}/>
+              <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+              <Line dataKey={dataKey} type="monotone" stroke={`var(--color-${dataKey})`} strokeWidth={2} dot={false} />
+            </LineChart>
+          </ChartContainer>
+        );
+      case "pie":
+        return (
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+             <PieChart accessibilityLayer>
+              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+              <Pie data={chartData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={60} strokeWidth={2}>
+                {(chartData as any[]).map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+        );
+      default:
+        return null;
+    }
+  };
+
 
 export default function AIAssistantPage() {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -54,17 +124,23 @@ export default function AIAssistantPage() {
     const mockHistory: ChatSession[] = [
       { id: "chat1", title: "Sales trends Q1", timestamp: new Date(Date.now() - 86400000), messages: [
         { id: "m1", sender: "user", text: "Show me sales trends for Q1.", timestamp: new Date(Date.now() - 86400000) },
-        { id: "m2", sender: "ai", text: "Sales increased by 15% in Q1. Here's a breakdown:", chart: { type: 'bar', data: {}, image: 'https://placehold.co/300x150.png', dataAiHint: 'sales chart' }, timestamp: new Date(Date.now() - 86400000) }
+        { 
+            id: "m2", 
+            sender: "ai", 
+            text: "Sales increased by 15% in Q1, with a peak in March.",
+            chart: {
+                type: "bar",
+                data: [{ name: "Jan", sales: 3200 }, { name: "Feb", sales: 3800 }, { name: "Mar", sales: 5100 }],
+                config: { sales: { label: "Sales", color: "hsl(var(--chart-1))" } }
+            },
+            timestamp: new Date(Date.now() - 86400000) 
+        }
       ]},
       { id: "chat2", title: "Top products by region", timestamp: new Date(Date.now() - 172800000), messages: [] },
     ];
     setChatHistory(mockHistory);
-    if (mockHistory.length > 0) {
-      // setActiveChatId(mockHistory[0].id);
-      // setMessages(mockHistory[0].messages);
-    } else {
-      startNewChat();
-    }
+    // Start with a new chat by default for a cleaner initial view
+    startNewChat();
   }, []);
 
   const startNewChat = () => {
@@ -101,7 +177,6 @@ export default function AIAssistantPage() {
       };
       const aiResponse: AnswerDataQuestionsOutput = await answerDataQuestions(aiInput);
       
-      // Simulate parsing AI response for charts/tables
       const insightId = `insight-${Date.now()}`;
       const aiMessage: Message = {
         id: `msg-${Date.now() + 1}`,
@@ -110,11 +185,19 @@ export default function AIAssistantPage() {
         timestamp: new Date(),
         insightId: insightId, // Assign an ID for bookmarking
       };
-      // This is a mock: in a real app, the AI would return structured data for charts/tables
-      if (aiResponse.answer.toLowerCase().includes("sales trend")) {
-        aiMessage.chart = { type: 'bar', data: {}, image: 'https://placehold.co/300x150.png', dataAiHint: 'sales chart' };
-      } else if (aiResponse.answer.toLowerCase().includes("top products")) {
-         aiMessage.table = { headers: ["Product", "Sales"], rows: [["Product A", 1500], ["Product B", 1200]], dataAiHint: 'product sales'};
+      
+      if (aiResponse.chart) {
+        aiMessage.chart = {
+            type: aiResponse.chart.type,
+            data: aiResponse.chart.data,
+            config: aiResponse.chart.config,
+        };
+      }
+      if (aiResponse.table) {
+        aiMessage.table = {
+            headers: aiResponse.table.headers,
+            rows: aiResponse.table.rows,
+        };
       }
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -133,7 +216,7 @@ export default function AIAssistantPage() {
       const errorMessage: Message = {
         id: `msg-${Date.now() + 1}`,
         sender: "ai",
-        text: "Sorry, I encountered an error. Please try again.",
+        text: "Sorry, I encountered an error while processing your request. The AI may not have returned the data in the expected format. Please try rephrasing your question.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -167,8 +250,6 @@ export default function AIAssistantPage() {
   const handleSuggestionClick = (suggestion: string) => {
     setCurrentMessage(suggestion);
     setSuggestions([]);
-    // Optionally, auto-send message on suggestion click
-    // handleSendMessage(); // but need to set currentMessage first and then call it.
   };
 
   const handleBookmark = async (message: Message) => {
@@ -244,32 +325,38 @@ export default function AIAssistantPage() {
           </CardHeader>
           <CardContent className="flex-1 overflow-hidden p-0">
             <ScrollArea className="h-full p-4 space-y-4">
+              {messages.length === 0 && (
+                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                  <MessageSquare className="h-12 w-12 mb-4"/>
+                  <h3 className="text-lg font-semibold">Start a conversation</h3>
+                  <p className="text-sm">Ask a question about your data to begin.</p>
+                </div>
+              )}
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`flex gap-2 max-w-[75%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={msg.sender === 'user' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png"} data-ai-hint={msg.sender === 'user' ? 'user profile' : 'robot avatar'}/>
-                      <AvatarFallback>{msg.sender === 'user' ? 'U' : 'AI'}</AvatarFallback>
+                  <div className={`flex gap-3 max-w-[80%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'items-start'}`}>
+                    <Avatar className="h-8 w-8 border">
+                       {msg.sender === 'user' ? <User className="h-5 w-5 m-auto text-muted-foreground"/> : <Bot className="h-5 w-5 m-auto text-primary"/>}
                     </Avatar>
-                    <div className={`p-3 rounded-lg shadow ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card border'}`}>
+                    <div className={`p-3 rounded-lg shadow-sm ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card border'}`}>
                       <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
-                      {msg.chart?.image && (
-                        <div className="mt-2 rounded-md overflow-hidden border">
-                          <Image src={msg.chart.image} alt="Chart" width={300} height={150} data-ai-hint={msg.chart.dataAiHint || "analytics chart"} />
+                      {msg.chart && msg.chart.data && (
+                        <div className="mt-3 p-2 bg-background/50 rounded-md border">
+                          {renderChart(msg.chart.type, msg.chart.data, msg.chart.config)}
                         </div>
                       )}
                       {msg.table && (
-                         <div className="mt-2 overflow-x-auto">
-                            <table className="min-w-full text-xs border bg-background">
-                                <thead>
-                                    <tr className="bg-muted">
-                                    {msg.table.headers.map(header => <th key={header} className="p-2 border text-left font-medium">{header}</th>)}
+                         <div className="mt-3 overflow-x-auto bg-background/50 p-2 rounded-md border">
+                            <table className="min-w-full text-xs bg-transparent">
+                                <thead className="border-b">
+                                    <tr className="text-left">
+                                    {msg.table.headers.map(header => <th key={header} className="p-2 font-medium">{header}</th>)}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {msg.table.rows.map((row, rowIndex) => (
-                                        <tr key={rowIndex} className="border-b">
-                                        {row.map((cell, cellIndex) => <td key={cellIndex} className="p-2 border">{cell}</td>)}
+                                        <tr key={rowIndex} className="border-b last:border-none">
+                                        {row.map((cell, cellIndex) => <td key={cellIndex} className="p-2">{cell}</td>)}
                                         </tr>
                                     ))}
                                 </tbody>
@@ -277,18 +364,15 @@ export default function AIAssistantPage() {
                          </div>
                       )}
                       <div className="text-xs mt-2 opacity-70">
-                        {msg.timestamp.toLocaleTimeString()}
+                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
                        {msg.sender === 'ai' && (
-                        <div className="mt-2 flex items-center gap-2">
+                        <div className="mt-2 -ml-1 flex items-center gap-1">
                           {msg.insightId && (
                             <Button variant="ghost" size="xs" onClick={() => handleBookmark(msg)} className="p-1 h-auto text-xs">
                               <Bookmark className="h-3 w-3 mr-1" /> Bookmark
                             </Button>
                           )}
-                          {/* Feedback buttons could be added here */}
-                          {/* <Button variant="ghost" size="xs" className="p-1 h-auto"><ThumbsUp className="h-3 w-3" /></Button>
-                          <Button variant="ghost" size="xs" className="p-1 h-auto"><ThumbsDown className="h-3 w-3" /></Button> */}
                         </div>
                       )}
                     </div>
@@ -301,7 +385,7 @@ export default function AIAssistantPage() {
           <div className="p-4 border-t bg-background">
              {suggestions.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-2">
-                <span className="text-sm text-muted-foreground flex items-center gap-1"><Lightbulb className="h-4 w-4 text-accent"/> Suggestions:</span>
+                <span className="text-sm text-muted-foreground flex items-center gap-1"><Lightbulb className="h-4 w-4 text-yellow-500"/> Suggestions:</span>
                 {suggestions.map((s, i) => (
                   <Button key={i} variant="outline" size="sm" onClick={() => handleSuggestionClick(s)} className="text-xs">
                     {s}
