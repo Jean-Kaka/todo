@@ -53,7 +53,7 @@ export default function SampleDataPage() {
         This adds a pre-configured dataset so you can test features like AI Assistant and Insight Hub. You can remove it later.
       </p>
 
-      <div className="flex gap-4 mt-8">
+      <div className="flex flex-col sm:flex-row gap-4 mt-8">
         <Button onClick={() => {
             console.log("Import sample data: false");
             router.push("/onboarding/two-factor-auth");

@@ -32,7 +32,7 @@ export default function OnboardingLayout({
         <h1 className="text-3xl font-bold font-headline text-primary">AgentY</h1>
       </Link>
       <div className="w-full max-w-xl z-10">
-        <div className="bg-card/80 backdrop-blur-sm p-8 rounded-lg shadow-2xl border">
+        <div className="bg-card/80 backdrop-blur-sm p-6 sm:p-8 rounded-lg shadow-2xl border">
             <h2 className="text-3xl font-bold font-headline mb-2 text-center">{title}</h2>
             <p className="text-muted-foreground mb-6 text-center">{description}</p>
             <Progress value={progressValue} className="w-full mb-8 h-2" />

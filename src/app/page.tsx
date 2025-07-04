@@ -41,11 +41,11 @@ export default function LandingPage() {
           <TrendingUp className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-primary">AgentY</h1>
         </Link>
-        <nav className="space-x-4">
-          <Button variant="ghost" asChild>
+        <nav className="flex items-center gap-2 sm:gap-4">
+          <Button variant="ghost" asChild className="hidden sm:inline-flex">
             <Link href="#how-it-works">How it Works</Link>
           </Button>
-          <Button variant="ghost" asChild>
+          <Button variant="ghost" asChild className="hidden sm:inline-flex">
             <Link href="#benefits">Benefits</Link>
           </Button>
           <Button asChild>
