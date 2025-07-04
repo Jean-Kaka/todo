@@ -288,7 +288,7 @@ export default function AIAssistantPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-[calc(100vh-10rem)] md:h-[calc(100vh-8rem)]"> {/* Adjust height based on AppHeader */}
+      <div className="flex h-full">
         {/* Chat History Sidebar */}
         <Card className="w-1/4 min-w-[250px] hidden md:flex flex-col mr-4">
           <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
