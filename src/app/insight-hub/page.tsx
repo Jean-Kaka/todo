@@ -40,8 +40,9 @@ const mockInsights: ReportCardProps[] = [
     title: "Customer Segmentation Analysis",
     type: "summary",
     contentPreviewText:
-      "Customers are primarily segmented into three groups based on purchasing behavior and demographics. Group A (High Value) shows strong loyalty...",
+      "Customers are primarily segmented into three groups based on purchasing behavior and demographics. Group A (High Value) shows strong loyalty and frequent, large purchases. Group B (Potential) are recent customers with high potential for growth. Group C (At-Risk) have not purchased in over 90 days.",
     tags: ["customers", "segmentation", "marketing"],
+    folder: "Marketing Insights",
     lastModified: "Oct 24, 2023",
     createdBy: "Data Analyst",
   },
@@ -77,6 +78,8 @@ const mockInsights: ReportCardProps[] = [
       { name: "Feb", value: 1500 },
       { name: "Mar", value: 1300 },
       { name: "Apr", value: 1800 },
+      { name: "May", value: 2100 },
+      { name: "Jun", value: 2500 },
     ],
     chartConfig: {
       value: { label: "Visitors", color: "hsl(var(--chart-2))" },
@@ -85,6 +88,34 @@ const mockInsights: ReportCardProps[] = [
     tags: ["website", "analytics", "traffic"],
     lastModified: "Oct 15, 2023",
     createdBy: "Jane Doe",
+  },
+  {
+    id: "ih5",
+    title: "Inventory Levels by Product Category",
+    type: "summary",
+    contentPreviewText: "Inventory levels for 'Electronics' are critically low (avg. 15 units/SKU), while 'Apparel' is overstocked (avg. 250 units/SKU). Recommend a flash sale for apparel and expediting electronics shipments.",
+    tags: ["inventory", "operations", "alert"],
+    folder: "Operations",
+    lastModified: "Oct 12, 2023",
+    createdBy: "AI Assistant",
+  },
+  {
+    id: "ih6",
+    title: "Regional Profitability Report",
+    type: "chart",
+    chartType: "bar",
+    chartData: [
+      { name: "North America", value: 120000 },
+      { name: "Europe", value: 95000 },
+      { name: "Asia", value: 78000 },
+      { name: "South America", value: 45000 },
+    ],
+    chartConfig: { value: { label: "Profit", color: "hsl(var(--chart-3))" } },
+    dataAiHint: "finance report",
+    tags: ["finance", "profit", "regional"],
+    folder: "Sales Reports",
+    lastModified: "Oct 10, 2023",
+    createdBy: "John Smith",
   },
 ];
 
@@ -103,7 +134,7 @@ export default function InsightHubPage() {
     return mockInsights.filter(insight => {
       const matchesSearch = insight.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             (insight.description && insight.description.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesTag = filterTag === "all" || insight.tags.includes(filterTag);
+      const matchesTag = filterTag === "all" || (insight.tags && insight.tags.includes(filterTag));
       const matchesFolder = filterFolder === "all" || insight.folder === filterFolder;
       const matchesType = filterType === "all" || insight.type === filterType;
       return matchesSearch && matchesTag && matchesFolder && matchesType;

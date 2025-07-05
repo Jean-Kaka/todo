@@ -20,13 +20,18 @@ const uploadSteps = [
 
 // Mock data for preview
 const mockPreviewData = {
-  headers: ["OrderID", "Product Name", "Category", "Sale Amount", "Order Date", "Customer ID"],
+  headers: ["OrderID", "Product Name", "Category", "Sale Amount", "Order Date", "Customer ID", "Region"],
   rows: [
-    ["1001", "Laptop Pro X", "Electronics", "1200.00", "2023-10-01", "CUST001"],
-    ["1002", "Organic Coffee Beans", "Groceries", "22.50", "2023-10-01", "CUST002"],
-    ["1003", "Designer T-Shirt", "Apparel", "49.99", "2023-10-02", "CUST001"],
-    ["1004", "Smart Thermostat", "Home Goods", "199.00", "2023-10-03", "CUST003"],
-    ["1005", "Yoga Mat Premium", "Sports", "35.00", "2023-10-03", "CUST004"],
+    ["1001", "Laptop Pro X", "Electronics", "1200.00", "2023-10-01", "CUST001", "North America"],
+    ["1002", "Organic Coffee Beans", "Groceries", "22.50", "2023-10-01", "CUST002", "Europe"],
+    ["1003", "Designer T-Shirt", "Apparel", "49.99", "2023-10-02", "CUST001", "North America"],
+    ["1004", "Smart Thermostat", "Home Goods", "199.00", "2023-10-03", "CUST003", "Asia"],
+    ["1005", "Yoga Mat Premium", "Sports", "35.00", "2023-10-03", "CUST004", "North America"],
+    ["1006", "Wireless Earbuds", "Electronics", "149.99", "2023-10-04", "CUST005", "Europe"],
+    ["1007", "Artisan Bread", "Groceries", "6.50", "2023-10-04", "CUST002", "Europe"],
+    ["1008", "Running Shoes", "Apparel", "120.00", "2023-10-05", "CUST006", "Asia"],
+    ["1009", "Laptop Pro X", "Electronics", "1250.00", "2023-10-05", "CUST007", "North America"],
+    ["1010", "Air Fryer", "Home Goods", "89.50", "2023-10-06", "CUST003", "Asia"],
   ],
 };
 

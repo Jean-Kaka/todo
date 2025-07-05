@@ -43,6 +43,9 @@ const mockDataSources: DataSource[] = [
   { id: "ds_kb_3", name: "Social Media Analytics", type: "API", metadata: "XYZ Platform API v2", schema: "PostID, Likes, Comments, Shares...", tags: ["marketing", "social"], ownership: "Marketing Team", freshness: "Updated 5m ago" },
   { id: "ds_kb_4", name: "Inventory System", type: "Integration", metadata: "Shopify Sync", schema: "SKU, Stock, Price...", tags: ["inventory", "ecommerce"], ownership: "Operations", freshness: "Live" },
   { id: "ds_kb_5", name: "Archived User Data 2022", type: "File", metadata: "Parquet, 15GB", schema: "UserID, ProfileData, ActivityLog...", tags: ["archive", "gdpr"], ownership: "Legal Dept", freshness: "Uploaded Jan 15, 2023" },
+  { id: "ds_kb_6", name: "Google Analytics", type: "Integration", metadata: "GA4 Property ID: 12345", schema: "Sessions, Pageviews, Events...", tags: ["marketing", "website", "analytics"], ownership: "Marketing Team", freshness: "Live" },
+  { id: "ds_kb_7", name: "Q4 Marketing Spend", type: "File", metadata: "XLSX, 500KB", schema: "Date, Campaign, Channel, Spend...", tags: ["marketing", "q4", "finance"], ownership: "Marketing Team", freshness: "Uploaded Oct 5" },
+  { id: "ds_kb_8", name: "User Feedback Survey", type: "File", metadata: "JSON, 1.2MB", schema: "UserID, Rating, Comment, Date...", tags: ["customer", "feedback", "product"], ownership: "Product Team", freshness: "Uploaded Sep 20" },
 ];
 
 const typeIcons: Record<DataSource["type"], LucideIcon> = {
