@@ -20,22 +20,22 @@ const uploadSteps = [
 
 export default function UploadFilePage() {
   const router = useRouter();
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
+    if (event.target.files) {
+      setFiles(Array.from(event.target.files));
     }
   };
 
   const handleNext = () => {
-    if (!file) return;
+    if (files.length === 0) return;
     setIsUploading(true);
     // Simulate upload
     setTimeout(() => {
       setIsUploading(false);
-      console.log("File selected:", file.name);
+      console.log("Files selected:", files.map(f => f.name));
       // Store file or upload and then navigate
       router.push("/upload/preview");
     }, 1500);
@@ -56,7 +56,7 @@ export default function UploadFilePage() {
         <CardContent className="space-y-6">
           <div>
             <Label htmlFor="file-upload" className="block text-sm font-medium text-foreground mb-2">
-              Choose file to upload
+              Choose file(s) to upload
             </Label>
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md">
               <div className="space-y-1 text-center">
@@ -67,15 +67,24 @@ export default function UploadFilePage() {
                     className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
                   >
                     <span>Upload a file</span>
-                    <Input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept=".csv,.xlsx,.xls,.json,.parquet"/>
+                    <Input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept=".csv,.xlsx,.xls,.json,.parquet" multiple />
                   </Label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
                 <p className="text-xs text-muted-foreground">Max file size: 500MB</p>
               </div>
             </div>
-            {file && (
-              <p className="mt-2 text-sm text-muted-foreground">Selected file: <span className="font-medium text-foreground">{file.name}</span> ({ (file.size / (1024*1024)).toFixed(2) } MB)</p>
+            {files.length > 0 && (
+              <div className="mt-4 text-sm">
+                <h4 className="font-medium text-foreground">Selected Files:</h4>
+                <ul className="mt-2 list-disc list-inside space-y-1 rounded-md border p-3 bg-muted/50">
+                  {files.map((file) => (
+                    <li key={file.name} className="text-muted-foreground">
+                      <span className="text-foreground">{file.name}</span> ({ (file.size / (1024*1024)).toFixed(2) } MB)
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </div>
           
@@ -83,7 +92,7 @@ export default function UploadFilePage() {
             <Button variant="outline" onClick={() => router.push("/upload")}>
               Back to Source Selection
             </Button>
-            <Button onClick={handleNext} disabled={!file || isUploading} className="bg-primary hover:bg-primary/90">
+            <Button onClick={handleNext} disabled={files.length === 0 || isUploading} className="bg-primary hover:bg-primary/90">
               {isUploading ? "Uploading..." : "Next: Preview Data"}
             </Button>
           </div>

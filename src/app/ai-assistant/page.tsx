@@ -120,68 +120,14 @@ export default function AIAssistantPage() {
   useEffect(scrollToBottom, [messages]);
   
   useEffect(() => {
-    // Load initial chat history (mock)
-    const mockHistory: ChatSession[] = [
-      { id: "chat1", title: "Sales trends Q1", timestamp: new Date(Date.now() - 86400000), messages: [
-        { id: "m1", sender: "user", text: "Show me sales trends for Q1.", timestamp: new Date(Date.now() - 86400000) },
-        { 
-            id: "m2", 
-            sender: "ai", 
-            text: "Sales increased by 15% in Q1, with a peak in March.",
-            chart: {
-                type: "line",
-                data: [{ name: "Jan", sales: 3200 }, { name: "Feb", sales: 3800 }, { name: "Mar", sales: 5100 }],
-                config: { sales: { label: "Sales", color: "hsl(var(--chart-1))" } }
-            },
-            timestamp: new Date(Date.now() - 86400000) 
-        }
-      ]},
-      { id: "chat2", title: "Top products by region", timestamp: new Date(Date.now() - 172800000), messages: [
-        { id: "m2-1", sender: "user", text: "What are the top selling products by region?", timestamp: new Date(Date.now() - 172800000) },
-        { 
-            id: "m2-2", 
-            sender: "ai", 
-            text: "The top selling product category across all regions is 'Electronics'. Here is a breakdown:",
-            chart: {
-                type: "bar",
-                data: [
-                    { name: "North America", Electronics: 4000, Apparel: 2400, Home: 1400 },
-                    { name: "Europe", Electronics: 3000, Apparel: 2000, Home: 1000 },
-                    { name: "Asia", Electronics: 2200, Apparel: 1500, Home: 800 },
-                ],
-                config: { 
-                    Electronics: { label: "Electronics", color: "hsl(var(--chart-1))" },
-                    Apparel: { label: "Apparel", color: "hsl(var(--chart-2))" },
-                    Home: { label: "Home Goods", color: "hsl(var(--chart-3))" },
-                }
-            },
-            timestamp: new Date(Date.now() - 172800000) 
-        }
-      ]},
-      { id: "chat3", title: "Customer churn analysis", timestamp: new Date(Date.now() - 259200000), messages: [
-        { id: "m3-1", sender: "user", text: "Which customers haven't purchased in the last 6 months?", timestamp: new Date(Date.now() - 259200000) },
-        {
-          id: "m3-2",
-          sender: "ai",
-          text: "Here are the top 5 customers who haven't made a purchase in the last 6 months:",
-          table: {
-              headers: ["UserID", "Name", "LastPurchaseDate", "TotalSpent"],
-              rows: [
-                  ["CUST008", "David Wilson", "2023-04-12", 450.00],
-                  ["CUST015", "Emily Brown", "2023-03-28", 890.50],
-                  ["CUST002", "Jane Smith", "2023-03-15", 1200.75],
-                  ["CUST021", "Michael Clark", "2023-02-20", 320.00],
-                  ["CUST011", "Jessica Miller", "2023-01-05", 1500.25],
-              ]
-          },
-          timestamp: new Date(Date.now() - 259200000)
-        }
-      ]},
-    ];
-    setChatHistory(mockHistory);
-    // Start with a new chat by default for a cleaner initial view
-    startNewChat();
-  }, []);
+    // On initial load, if there's no chat history, start a new chat.
+    // In a real app, you might load saved chats for a returning user here.
+    if (chatHistory.length === 0) {
+      startNewChat();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once on component mount.
+
 
   const startNewChat = () => {
     const newChatId = `chat-${Date.now()}`;
@@ -206,7 +152,9 @@ export default function AIAssistantPage() {
       text: currentMessage,
       timestamp: new Date(),
     };
-    setMessages((prev) => [...prev, userMessage]);
+    
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setCurrentMessage("");
     setSuggestions([]);
 
@@ -239,16 +187,21 @@ export default function AIAssistantPage() {
             rows: aiResponse.table.rows,
         };
       }
+      
+      const finalMessages = [...updatedMessages, aiMessage];
+      setMessages(finalMessages);
 
-      setMessages((prev) => [...prev, aiMessage]);
-
-      // Update chat history title if it's the first user message
-      if (activeChatId && messages.filter(m => m.sender === 'user').length === 0) {
-         const newTitle = userMessage.text.substring(0, 30) + (userMessage.text.length > 30 ? "..." : "");
-         setChatHistory(prev => prev.map(chat => chat.id === activeChatId ? {...chat, title: newTitle, messages: [...messages, userMessage, aiMessage]} : chat));
-      } else if (activeChatId) {
-         setChatHistory(prev => prev.map(chat => chat.id === activeChatId ? {...chat, messages: [...messages, userMessage, aiMessage]} : chat));
-      }
+      // Update chat history with the complete conversation
+      setChatHistory(prev => prev.map(chat => {
+        if (chat.id === activeChatId) {
+           const isNewChat = chat.messages.length === 0;
+           const newTitle = isNewChat 
+              ? userMessage.text.substring(0, 30) + (userMessage.text.length > 30 ? "..." : "")
+              : chat.title;
+          return { ...chat, title: newTitle, messages: finalMessages };
+        }
+        return chat;
+      }));
 
 
     } catch (error) {
