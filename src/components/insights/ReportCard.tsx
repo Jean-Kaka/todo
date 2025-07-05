@@ -48,6 +48,12 @@ export interface ReportCardProps {
   createdBy: string;
 }
 
+interface ReportCardComponentProps extends ReportCardProps {
+  onEdit: () => void;
+  onShare: () => void;
+  onExport: () => void;
+}
+
 const typeIcons: Record<ReportCardProps["type"], LucideIcon> = {
   chart: BarChart2,
   table: FileText,
@@ -117,8 +123,11 @@ export default function ReportCard({
   tags,
   folder,
   lastModified,
-  createdBy
-}: ReportCardProps) {
+  createdBy,
+  onEdit,
+  onShare,
+  onExport
+}: ReportCardComponentProps) {
   const Icon = typeIcons[type];
 
   return (
@@ -136,9 +145,9 @@ export default function ReportCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem><Edit2 className="mr-2 h-4 w-4" /> Edit Details</DropdownMenuItem>
-              <DropdownMenuItem><Share2 className="mr-2 h-4 w-4" /> Share</DropdownMenuItem>
-              <DropdownMenuItem><Download className="mr-2 h-4 w-4" /> Export</DropdownMenuItem>
+              <DropdownMenuItem onClick={onEdit}><Edit2 className="mr-2 h-4 w-4" /> Edit Details</DropdownMenuItem>
+              <DropdownMenuItem onClick={onShare}><Share2 className="mr-2 h-4 w-4" /> Share</DropdownMenuItem>
+              <DropdownMenuItem onClick={onExport}><Download className="mr-2 h-4 w-4" /> Export as CSV</DropdownMenuItem>
               <DropdownMenuItem><CalendarPlus className="mr-2 h-4 w-4" /> Schedule</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem><FolderOpen className="mr-2 h-4 w-4" /> Move to Folder</DropdownMenuItem>

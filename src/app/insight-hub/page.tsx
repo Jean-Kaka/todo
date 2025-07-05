@@ -3,6 +3,8 @@
 
 import AppLayout from "@/components/layout/AppLayout";
 import ReportCard, { ReportCardProps } from "@/components/insights/ReportCard";
+import EditInsightDialog from "@/components/insights/EditInsightDialog";
+import ShareInsightDialog from "@/components/insights/ShareInsightDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +18,7 @@ import { Search, Tag, ListFilter, BarChart2, Folder, PlusCircle } from "lucide-r
 import { useState, useMemo } from "react";
 import Link from 'next/link';
 
-const mockInsights: ReportCardProps[] = [
+const initialInsights: ReportCardProps[] = [
   {
     id: "ih1",
     title: "Weekly Sales Performance",
@@ -49,7 +51,7 @@ const mockInsights: ReportCardProps[] = [
   {
     id: "ih3",
     title: "Top Performing Marketing Campaigns Q3",
-    type: "table",
+    type: "chart",
     chartType: "pie",
     chartData: [
       { name: "Social", value: 40, fill: "hsl(var(--chart-1))" },
@@ -120,18 +122,21 @@ const mockInsights: ReportCardProps[] = [
 ];
 
 
-const allTags = Array.from(new Set(mockInsights.flatMap(i => i.tags)));
-const allFolders = Array.from(new Set(mockInsights.map(i => i.folder).filter(Boolean) as string[]));
-
-
 export default function InsightHubPage() {
+  const [insights, setInsights] = useState<ReportCardProps[]>(initialInsights);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTag, setFilterTag] = useState<string | "all">("all");
   const [filterFolder, setFilterFolder] = useState<string | "all">("all");
   const [filterType, setFilterType] = useState<string | "all">("all");
 
+  const [editingInsight, setEditingInsight] = useState<ReportCardProps | null>(null);
+  const [sharingInsight, setSharingInsight] = useState<ReportCardProps | null>(null);
+
+  const allTags = useMemo(() => Array.from(new Set(insights.flatMap(i => i.tags))), [insights]);
+  const allFolders = useMemo(() => Array.from(new Set(insights.map(i => i.folder).filter(Boolean) as string[])), [insights]);
+
   const filteredInsights = useMemo(() => {
-    return mockInsights.filter(insight => {
+    return insights.filter(insight => {
       const matchesSearch = insight.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             (insight.description && insight.description.toLowerCase().includes(searchTerm.toLowerCase()));
       const matchesTag = filterTag === "all" || (insight.tags && insight.tags.includes(filterTag));
@@ -139,7 +144,33 @@ export default function InsightHubPage() {
       const matchesType = filterType === "all" || insight.type === filterType;
       return matchesSearch && matchesTag && matchesFolder && matchesType;
     });
-  }, [searchTerm, filterTag, filterFolder, filterType]);
+  }, [searchTerm, filterTag, filterFolder, filterType, insights]);
+
+  const handleSaveInsight = (updatedInsight: ReportCardProps) => {
+    setInsights(prev => prev.map(i => i.id === updatedInsight.id ? updatedInsight : i));
+    setEditingInsight(null);
+  };
+
+  const handleExport = (insight: ReportCardProps) => {
+    if (!insight.chartData) {
+      alert("No data to export for this insight.");
+      return;
+    }
+    const headers = Object.keys(insight.chartData[0]);
+    const csvContent = [
+      headers.join(','),
+      ...insight.chartData.map(row => headers.map(header => row[header]).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${insight.title.replace(/\s+/g, '_')}_export.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <AppLayout>
@@ -217,12 +248,30 @@ export default function InsightHubPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredInsights.map(insight => (
-                    <ReportCard key={insight.id} {...insight} />
+                    <ReportCard 
+                      key={insight.id} 
+                      {...insight} 
+                      onEdit={() => setEditingInsight(insight)}
+                      onShare={() => setSharingInsight(insight)}
+                      onExport={() => handleExport(insight)}
+                    />
                   ))}
                 </div>
             )}
         </div>
       </div>
+      
+      <EditInsightDialog 
+        insight={editingInsight}
+        isOpen={!!editingInsight}
+        onOpenChange={(open) => !open && setEditingInsight(null)}
+        onSave={handleSaveInsight}
+      />
+      <ShareInsightDialog 
+        insight={sharingInsight}
+        isOpen={!!sharingInsight}
+        onOpenChange={(open) => !open && setSharingInsight(null)}
+      />
     </AppLayout>
   );
 }
