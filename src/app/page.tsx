@@ -59,7 +59,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-background to-secondary/30">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2" prefetch={true}>
           <TrendingUp className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-primary">AgentY</h1>
         </Link>
@@ -71,7 +71,7 @@ export default function LandingPage() {
             <Link href="#benefits">Benefits</Link>
           </Button>
           <Button asChild>
-            <Link href="/register">Get Started</Link>
+            <Link href="/register" prefetch={true}>Get Started</Link>
           </Button>
         </nav>
       </header>
@@ -87,7 +87,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link href="/register">Register for Free</Link>
+              <Link href="/register" prefetch={true}>Register for Free</Link>
             </Button>
             <Button size="lg" variant="outline" className="border-accent text-accent hover:bg-accent/10">
               Watch Demo
@@ -172,7 +172,7 @@ export default function LandingPage() {
             Join hundreds of businesses transforming their operations with AgentY. Start your free trial today.
           </p>
           <Button size="lg" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            <Link href="/register">Sign Up Now</Link>
+            <Link href="/register" prefetch={true}>Sign Up Now</Link>
           </Button>
         </section>
       </main>
@@ -181,8 +181,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} AgentY. All rights reserved.</p>
            <div className="mt-2 space-x-4">
-            <Link href="/privacy" className="hover:text-primary">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-primary">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-primary" prefetch={true}>Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-primary" prefetch={true}>Terms of Service</Link>
           </div>
         </div>
       </footer>
