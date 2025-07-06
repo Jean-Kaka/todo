@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UploadCloud, FileText } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const uploadSteps = [
   { id: "source", name: "Choose Source" },
@@ -22,10 +23,20 @@ export default function UploadFilePage() {
   const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+  const handleFiles = (newFiles: FileList | null) => {
+    if (newFiles) {
+      // Allow adding to existing files instead of replacing
+      setFiles(prevFiles => [...prevFiles, ...Array.from(newFiles)]);
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFiles(Array.from(event.target.files));
+    handleFiles(event.target.files);
+    // Reset the input value to allow selecting the same file again
+    if (event.target) {
+        event.target.value = '';
     }
   };
 
@@ -41,6 +52,27 @@ export default function UploadFilePage() {
     }, 1500);
   };
 
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDraggingOver(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDraggingOver(false);
+  };
+  
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDraggingOver(false);
+    handleFiles(event.dataTransfer.files);
+  };
+
+  const handleRemoveFile = (fileNameToRemove: string, fileIndexToRemove: number) => {
+    setFiles(prevFiles => prevFiles.filter((file, index) => file.name !== fileNameToRemove || index !== fileIndexToRemove));
+  };
+
+
   return (
     <div className="space-y-8">
       <UploadStepper steps={uploadSteps} currentStep={1} onStepClick={(step) => router.push(step === 0 ? "/upload" : "#")} />
@@ -49,16 +81,24 @@ export default function UploadFilePage() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <FileText className="h-6 w-6 text-primary"/>
-            <CardTitle className="text-2xl font-headline">Upload a File</CardTitle>
+            <CardTitle className="text-2xl font-headline">Upload Files</CardTitle>
           </div>
           <CardDescription>Supported formats: CSV, Excel (XLSX), JSON, Parquet.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
             <Label htmlFor="file-upload" className="block text-sm font-medium text-foreground mb-2">
-              Choose file(s) to upload
+              Choose files to upload
             </Label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md">
+            <div 
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={cn(
+                "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md transition-colors",
+                isDraggingOver ? "border-primary bg-primary/10" : "border-border"
+              )}
+            >
               <div className="space-y-1 text-center">
                 <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
                 <div className="flex text-sm text-muted-foreground">
@@ -66,21 +106,27 @@ export default function UploadFilePage() {
                     htmlFor="file-upload"
                     className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
                   >
-                    <span>Upload a file</span>
+                    <span>Upload files</span>
                     <Input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept=".csv,.xlsx,.xls,.json,.parquet" multiple />
                   </Label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-muted-foreground">Max file size: 500MB</p>
+                <p className="text-xs text-muted-foreground">Max file size per file: 500MB</p>
               </div>
             </div>
             {files.length > 0 && (
               <div className="mt-4 text-sm">
                 <h4 className="font-medium text-foreground">Selected Files:</h4>
-                <ul className="mt-2 list-disc list-inside space-y-1 rounded-md border p-3 bg-muted/50">
-                  {files.map((file) => (
-                    <li key={file.name} className="text-muted-foreground">
-                      <span className="text-foreground">{file.name}</span> ({ (file.size / (1024*1024)).toFixed(2) } MB)
+                <ul className="mt-2 space-y-2">
+                  {files.map((file, index) => (
+                    <li key={`${file.name}-${index}`} className="flex items-center justify-between rounded-md border p-2 bg-muted/50 text-muted-foreground">
+                      <div className="truncate pr-2">
+                        <span className="text-foreground font-medium truncate">{file.name}</span>
+                        <span className="ml-2">({ (file.size / (1024*1024)).toFixed(2) } MB)</span>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => handleRemoveFile(file.name, index)} className="text-destructive hover:text-destructive shrink-0">
+                        Remove
+                      </Button>
                     </li>
                   ))}
                 </ul>
@@ -93,7 +139,7 @@ export default function UploadFilePage() {
               Back to Source Selection
             </Button>
             <Button onClick={handleNext} disabled={files.length === 0 || isUploading} className="bg-primary hover:bg-primary/90">
-              {isUploading ? "Uploading..." : "Next: Preview Data"}
+              {isUploading ? `Uploading ${files.length} file(s)...` : `Next: Preview Data (${files.length})`}
             </Button>
           </div>
         </CardContent>
