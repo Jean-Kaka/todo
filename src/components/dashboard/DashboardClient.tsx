@@ -6,19 +6,39 @@ import DataSourceCard, { DataSourceCardProps } from "@/components/dashboard/Data
 import InsightCard, { InsightCardProps } from "@/components/dashboard/InsightCard";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { LucideIcon } from "lucide-react";
 import { 
   PlusCircle, 
   MessageCircle, 
   BarChartHorizontalBig, 
   AlertTriangle, 
   Bell, 
-  ArrowRight
+  ArrowRight,
+  DollarSign,
+  UserPlus,
+  Repeat,
+  Database,
+  FileUp,
+  Lightbulb,
+  FilePlus2,
+  Users
 } from "lucide-react";
 import Link from "next/link";
-import StatCard, { StatCardProps } from "@/components/dashboard/StatCard";
+import StatCard from "@/components/dashboard/StatCard";
 import { AnalyticsCharts } from "@/components/dashboard/AnalyticsCharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+
+const iconMap: { [key: string]: LucideIcon } = {
+  DollarSign,
+  UserPlus,
+  Repeat,
+  Database,
+  FileUp,
+  Lightbulb,
+  FilePlus2,
+  Users
+};
 
 // Export the type so it can be used in the server component
 export type Activity = {
@@ -27,12 +47,22 @@ export type Activity = {
     action: string;
     target: string;
     time: string;
-    icon: React.ElementType;
+    icon: string;
 };
+
+// Type for stats prop received from server
+interface Stat {
+  title: string;
+  value: string;
+  icon: string;
+  change?: string;
+  changeType?: "increase" | "decrease";
+}
+
 
 // Props interface for the new client component
 interface DashboardClientProps {
-  stats: StatCardProps[];
+  stats: Stat[];
   dataSources: DataSourceCardProps[];
   insights: InsightCardProps[];
   activity: Activity[];
@@ -47,7 +77,7 @@ export default function DashboardClient({ stats, dataSources, insights, activity
         <section>
            <h2 className="text-2xl font-semibold mb-4 font-headline">Overview</h2>
            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {stats.map(stat => <StatCard key={stat.title} {...stat} />)}
+              {stats.map(stat => <StatCard key={stat.title} {...stat} icon={iconMap[stat.icon]} />)}
            </div>
         </section>
 
@@ -119,22 +149,25 @@ export default function DashboardClient({ stats, dataSources, insights, activity
               <Card>
                 <CardContent className="p-0">
                   <div className="space-y-4 p-4">
-                    {activity.map((activityItem, index) => (
-                      <div key={activityItem.id}>
-                        <div className="flex items-start gap-3">
-                          <div className="bg-muted rounded-full p-2 mt-1">
-                            <activityItem.icon className="h-5 w-5 text-muted-foreground" />
+                    {activity.map((activityItem, index) => {
+                      const ActivityIcon = iconMap[activityItem.icon];
+                      return (
+                        <div key={activityItem.id}>
+                          <div className="flex items-start gap-3">
+                            <div className="bg-muted rounded-full p-2 mt-1">
+                              {ActivityIcon && <ActivityIcon className="h-5 w-5 text-muted-foreground" />}
+                            </div>
+                            <div className="text-sm flex-1">
+                              <p className="leading-snug">
+                                <span className="font-semibold">{activityItem.user.name}</span> {activityItem.action} {activityItem.target && <span className="font-semibold text-primary">{activityItem.target}</span>}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{activityItem.time}</p>
+                            </div>
                           </div>
-                          <div className="text-sm flex-1">
-                            <p className="leading-snug">
-                              <span className="font-semibold">{activityItem.user.name}</span> {activityItem.action} {activityItem.target && <span className="font-semibold text-primary">{activityItem.target}</span>}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{activityItem.time}</p>
-                          </div>
+                          {index < activity.length - 1 && <Separator className="mt-4"/>}
                         </div>
-                        {index < activity.length - 1 && <Separator className="mt-4"/>}
-                      </div>
-                    ))}
+                      )
+                    })}
                    </div>
                 </CardContent>
               </Card>

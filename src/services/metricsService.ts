@@ -1,31 +1,16 @@
 // src/services/metricsService.ts
 'use server';
 
-import type { LucideIcon } from "lucide-react";
-import { 
-  DollarSign, 
-  UserPlus, 
-  Repeat, 
-  Database,
-  FileUp,
-  Lightbulb,
-  FilePlus2,
-  Users
-} from "lucide-react";
-import type { StatCardProps } from "@/components/dashboard/StatCard";
-import type { InsightCardProps } from "@/components/dashboard/InsightCard";
-import type { DataSourceCardProps } from "@/components/dashboard/DataSourceCard";
-
 // In a real application, this data would be fetched from a database (e.g., Firestore).
 // These functions simulate that data fetching process.
 
 // --- Mock Data ---
 
-const mockStats: StatCardProps[] = [
-  { title: "Monthly Sales", value: "$45,231.89", icon: DollarSign, change: "+20.1%", changeType: "increase" as const },
-  { title: "New Users", value: "+1,234", icon: UserPlus, change: "+15.2%", changeType: "increase" as const },
-  { title: "Recurring Users", value: "8,765", icon: Repeat, change: "-1.2%", changeType: "decrease" as const },
-  { title: "Data Sources", value: "12", icon: Database, change: "+2", changeType: "increase" as const },
+const mockStats = [
+  { title: "Monthly Sales", value: "$45,231.89", icon: "DollarSign", change: "+20.1%", changeType: "increase" as const },
+  { title: "New Users", value: "+1,234", icon: "UserPlus", change: "+15.2%", changeType: "increase" as const },
+  { title: "Recurring Users", value: "8,765", icon: "Repeat", change: "-1.2%", changeType: "decrease" as const },
+  { title: "Data Sources", value: "12", icon: "Database", change: "+2", changeType: "increase" as const },
 ];
 
 const mockActivity = [
@@ -35,7 +20,7 @@ const mockActivity = [
     action: "uploaded a new data source",
     target: "Q4 Sales Report.csv",
     time: "5m ago",
-    icon: FileUp,
+    icon: "FileUp",
   },
   {
     id: "act2",
@@ -43,7 +28,7 @@ const mockActivity = [
     action: "generated a new insight about",
     target: "User Engagement Trends",
     time: "30m ago",
-    icon: Lightbulb,
+    icon: "Lightbulb",
   },
   {
     id: "act3",
@@ -51,7 +36,7 @@ const mockActivity = [
     action: "created a new report",
     target: "Weekly Marketing KPIs",
     time: "2h ago",
-    icon: FilePlus2,
+    icon: "FilePlus2",
   },
   {
     id: "act4",
@@ -59,17 +44,17 @@ const mockActivity = [
     action: "added 3 new team members",
     target: "",
     time: "1d ago",
-    icon: Users,
+    icon: "Users",
   },
 ];
 
-const mockDataSources: DataSourceCardProps[] = [
+const mockDataSources = [
   { id: "ds1", name: "Sales Q3 Data", type: "File", freshness: "Updated 5 mins ago", rowCount: 150234, schemaSummary: "12 columns, 3 indexed", status: "ok" },
   { id: "ds2", name: "Customer Database", type: "Database", freshness: "Syncing...", rowCount: 87650, schemaSummary: "25 columns, 8 indexed", status: "syncing" },
   { id: "ds3", name: "Marketing API", type: "API", freshness: "Last checked 1 day ago", rowCount: 500000, schemaSummary: "8 fields", status: "error" },
 ];
 
-const mockInsights: InsightCardProps[] = [
+const mockInsights = [
   {
     id: "in1",
     title: "User Engagement Drops",
