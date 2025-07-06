@@ -15,6 +15,7 @@ interface OnboardingState {
   kpis: string[];
   dataSources: string[];
   importSampleData: boolean;
+  onboardingFiles: File[];
   twoFactorEnabled: boolean;
   integrations: string[];
 
@@ -25,6 +26,7 @@ interface OnboardingState {
   toggleKpi: (kpi: string) => void;
   toggleDataSource: (source: string) => void;
   setImportSampleData: (value: boolean) => void;
+  setOnboardingFiles: (files: File[]) => void;
   setTwoFactorEnabled: (value: boolean) => void; // A simplified representation
   toggleIntegration: (integration: string) => void;
   
@@ -39,6 +41,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   kpis: [],
   dataSources: [],
   importSampleData: true,
+  onboardingFiles: [],
   twoFactorEnabled: false,
   integrations: [],
 
@@ -67,6 +70,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
         : [...state.dataSources, source],
   })),
   setImportSampleData: (value) => set({ importSampleData: value }),
+  setOnboardingFiles: (files) => set({ onboardingFiles: files }),
   setTwoFactorEnabled: (value) => set({ twoFactorEnabled: value }),
   toggleIntegration: (integration) => set((state) => ({
     integrations: state.integrations.includes(integration)

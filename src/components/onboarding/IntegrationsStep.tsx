@@ -22,7 +22,12 @@ export default function IntegrationsStep({ onBack }: IntegrationsStepProps) {
 
   const handleFinish = () => {
     const finalState = getState();
-    console.log("Onboarding complete. Final state:", finalState);
+    // Sanitize file objects for logging
+    const loggedState = {
+      ...finalState,
+      onboardingFiles: finalState.onboardingFiles.map(f => ({ name: f.name, size: f.size, type: f.type }))
+    };
+    console.log("Onboarding complete. Final state:", loggedState);
     router.push("/onboarding/constructing-dashboard");
   };
 

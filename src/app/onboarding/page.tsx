@@ -11,6 +11,7 @@ import ObjectivesStep from "@/components/onboarding/ObjectivesStep";
 import KpisStep from "@/components/onboarding/KpisStep";
 import DataSourcesStep from "@/components/onboarding/DataSourcesStep";
 import SampleDataStep from "@/components/onboarding/SampleDataStep";
+import FileUploadStep from "@/components/onboarding/FileUploadStep";
 import TwoFactorAuthStep from "@/components/onboarding/TwoFactorAuthStep";
 import IntegrationsStep from "@/components/onboarding/IntegrationsStep";
 
@@ -21,6 +22,7 @@ const steps = [
   { component: KpisStep, title: "Identify Your Key Performance Indicators", description: "Select the metrics that matter most to your business. This helps us customize your dashboards." },
   { component: DataSourcesStep, title: "Connect Your Data", description: "Select all the types of data you plan to work with." },
   { component: SampleDataStep, title: "Ready to Explore?", description: "We can add a sample dataset to get you started right away." },
+  { component: FileUploadStep, title: "Upload Your Data", description: "Get a head start by uploading your first dataset. You can also skip this." },
   { component: TwoFactorAuthStep, title: "Secure Your Account", description: "Set up two-factor authentication (2FA) for an extra layer of security." },
   { component: IntegrationsStep, title: "Almost There!", description: "Optionally connect your favorite tools. You can always do this later." },
 ];
