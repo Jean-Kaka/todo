@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Changed from "next/navigation"
+import { useRouter } from "next/navigation"; 
 
 import { Button } from "@/components/ui/button";
 import {
@@ -48,7 +48,7 @@ export default function RegisterPage() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     // Simulate API call
-    router.push("/onboarding/role");
+    router.push("/onboarding");
   }
 
   return (
