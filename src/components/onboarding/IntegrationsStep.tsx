@@ -1,10 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useOnboardingStore } from "@/lib/onboarding-store";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Plus, Package, DatabaseZap, PartyPopper } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Check, Plus, Package, DatabaseZap, PartyPopper, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const integrationsOptions = [
@@ -18,7 +22,8 @@ interface IntegrationsStepProps {
 
 export default function IntegrationsStep({ onBack }: IntegrationsStepProps) {
   const router = useRouter();
-  const { integrations, toggleIntegration, getState } = useOnboardingStore();
+  const { integrations, toggleIntegration, invitedFriends, addInvitedFriend, getState } = useOnboardingStore();
+  const [inviteEmail, setInviteEmail] = useState("");
 
   const handleFinish = () => {
     const finalState = getState();
@@ -29,6 +34,14 @@ export default function IntegrationsStep({ onBack }: IntegrationsStepProps) {
     };
     console.log("Onboarding complete. Final state:", loggedState);
     router.push("/onboarding/constructing-dashboard");
+  };
+  
+  const handleSendInvite = () => {
+    // simple email regex for validation
+    if (inviteEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail)) {
+        addInvitedFriend(inviteEmail);
+        setInviteEmail(""); // clear input
+    }
   };
 
   return (
@@ -55,7 +68,37 @@ export default function IntegrationsStep({ onBack }: IntegrationsStepProps) {
           )
         })}
       </div>
-       <p className="text-sm text-muted-foreground mt-6 text-center">
+      
+      <Separator className="my-8" />
+
+      <div className="space-y-4">
+        <h3 className="font-medium flex items-center gap-2 text-lg"><Users className="h-5 w-5 text-muted-foreground" /> Invite Your Team</h3>
+        <p className="text-sm text-muted-foreground">
+            Get your team on board from day one. You can send multiple invites.
+        </p>
+        <div className="flex gap-2">
+            <Input 
+                type="email"
+                placeholder="friend@example.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSendInvite(); }}}
+            />
+            <Button type="button" variant="outline" onClick={handleSendInvite}>Send Invite</Button>
+        </div>
+        {invitedFriends.length > 0 && (
+            <div className="space-y-2 pt-2">
+                <h4 className="text-xs font-medium text-muted-foreground">Invited:</h4>
+                <div className="flex flex-wrap gap-2">
+                    {invitedFriends.map((email, index) => (
+                        <Badge key={index} variant="secondary">{email}</Badge>
+                    ))}
+                </div>
+            </div>
+        )}
+      </div>
+
+       <p className="text-sm text-muted-foreground mt-8 text-center">
         You can set up more integrations later from your account settings.
       </p>
       <div className="flex justify-between items-center mt-8">

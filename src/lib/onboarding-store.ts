@@ -18,6 +18,7 @@ interface OnboardingState {
   onboardingFiles: File[];
   twoFactorEnabled: boolean;
   integrations: string[];
+  invitedFriends: string[];
 
   setRole: (role: string) => void;
   setOtherRole: (otherRole: string) => void;
@@ -29,6 +30,7 @@ interface OnboardingState {
   setOnboardingFiles: (files: File[]) => void;
   setTwoFactorEnabled: (value: boolean) => void; // A simplified representation
   toggleIntegration: (integration: string) => void;
+  addInvitedFriend: (email: string) => void;
   
   getState: () => Omit<OnboardingState, 'getState'>;
 }
@@ -44,6 +46,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   onboardingFiles: [],
   twoFactorEnabled: false,
   integrations: [],
+  invitedFriends: [],
 
   setRole: (role) => {
     if (role !== 'other') {
@@ -76,6 +79,11 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     integrations: state.integrations.includes(integration)
         ? state.integrations.filter((i) => i !== integration)
         : [...state.integrations, integration],
+  })),
+  addInvitedFriend: (email) => set((state) => ({
+    invitedFriends: state.invitedFriends.includes(email) 
+      ? state.invitedFriends 
+      : [...state.invitedFriends, email],
   })),
   
   getState: () => {
