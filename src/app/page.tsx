@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, TrendingUp, DatabaseZap, Share, Lightbulb, BarChart2, SearchCode } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function LandingPage() {
@@ -80,13 +79,14 @@ export default function LandingPage() {
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
               Our intuitive platform makes it easy to connect your data sources and start discovering valuable insights in minutes.
             </p>
-            <div className="relative aspect-video max-w-4xl mx-auto rounded-lg overflow-hidden shadow-2xl">
-              <Image
-                src="https://placehold.co/1200x675.png"
-                alt="AgentY platform visual explainer"
-                fill
-                className="object-cover"
-                data-ai-hint="data dashboard"
+            <div className="relative aspect-video max-w-4xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-black">
+              <video
+                src="https://www.w3schools.com/html/mov_bbb.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute top-0 left-0 w-full h-full object-cover"
               />
             </div>
           </div>
