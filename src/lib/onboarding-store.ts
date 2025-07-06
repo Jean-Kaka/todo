@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 interface OnboardingState {
   role: string | null;
+  otherRole: string;
   companyDetails: {
     companyName: string;
     companySize: string;
@@ -18,6 +19,7 @@ interface OnboardingState {
   integrations: string[];
 
   setRole: (role: string) => void;
+  setOtherRole: (otherRole: string) => void;
   setCompanyDetails: (details: OnboardingState['companyDetails']) => void;
   toggleObjective: (objective: string) => void;
   toggleKpi: (kpi: string) => void;
@@ -31,6 +33,7 @@ interface OnboardingState {
 
 export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   role: null,
+  otherRole: '',
   companyDetails: null,
   objectives: [],
   kpis: [],
@@ -39,7 +42,14 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   twoFactorEnabled: false,
   integrations: [],
 
-  setRole: (role) => set({ role }),
+  setRole: (role) => {
+    if (role !== 'other') {
+      set({ role, otherRole: '' });
+    } else {
+      set({ role });
+    }
+  },
+  setOtherRole: (otherRole) => set({ otherRole }),
   setCompanyDetails: (details) => set({ companyDetails: details }),
   toggleObjective: (objective) => set((state) => ({
     objectives: state.objectives.includes(objective)

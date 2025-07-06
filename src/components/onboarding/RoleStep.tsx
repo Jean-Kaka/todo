@@ -3,6 +3,7 @@
 import { useOnboardingStore } from "@/lib/onboarding-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Briefcase, ShieldCheck, Code, Megaphone, ClipboardList, GraduationCap, Crown, UserSquare, Cog, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,37 +25,50 @@ interface RoleStepProps {
 }
 
 export default function RoleStep({ onNext }: RoleStepProps) {
-  const { role, setRole } = useOnboardingStore();
+  const { role, setRole, otherRole, setOtherRole } = useOnboardingStore();
 
   const handleNext = () => {
-    if (role) {
-      onNext();
-    }
+    if (!role) return;
+    if (role === 'other' && !otherRole.trim()) return;
+    onNext();
   };
+  
+  const isNextDisabled = !role || (role === 'other' && !otherRole.trim());
 
   return (
     <>
       <div className="space-y-4">
         {roles.map((r) => (
-          <Card
-            key={r.id}
-            onClick={() => setRole(r.id)}
-            className={cn(
-              "cursor-pointer transition-all hover:shadow-md",
-              role === r.id ? "ring-2 ring-primary shadow-md" : "ring-1 ring-border"
-            )}
-          >
-            <CardContent className="p-4 flex items-center gap-4">
-              <r.icon className={cn("h-8 w-8", role === r.id ? "text-primary" : "text-muted-foreground")} />
-              <div>
-                <h3 className="font-medium">{r.name}</h3>
-                <p className="text-sm text-muted-foreground">{r.description}</p>
+          <div key={r.id}>
+            <Card
+              onClick={() => setRole(r.id)}
+              className={cn(
+                "cursor-pointer transition-all hover:shadow-md",
+                role === r.id ? "ring-2 ring-primary shadow-md" : "ring-1 ring-border"
+              )}
+            >
+              <CardContent className="p-4 flex items-center gap-4">
+                <r.icon className={cn("h-8 w-8", role === r.id ? "text-primary" : "text-muted-foreground")} />
+                <div>
+                  <h3 className="font-medium">{r.name}</h3>
+                  <p className="text-sm text-muted-foreground">{r.description}</p>
+                </div>
+              </CardContent>
+            </Card>
+            {r.id === 'other' && role === 'other' && (
+              <div className="mt-4 pl-2 pr-2">
+                <Input 
+                  placeholder="Please specify your role"
+                  value={otherRole}
+                  onChange={(e) => setOtherRole(e.target.value)}
+                  autoFocus
+                />
               </div>
-            </CardContent>
-          </Card>
+            )}
+          </div>
         ))}
       </div>
-      <Button onClick={handleNext} disabled={!role} className="w-full mt-8 bg-primary hover:bg-primary/90">
+      <Button onClick={handleNext} disabled={isNextDisabled} className="w-full mt-8 bg-primary hover:bg-primary/90">
         Next
       </Button>
     </>
