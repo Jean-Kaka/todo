@@ -1,65 +1,44 @@
 // src/app/page.tsx
-"use client"; // Make this a client component
-
-import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, DatabaseZap, Share, Lightbulb, BarChart2, SearchCode, PlayCircle } from "lucide-react";
+import { TrendingUp, DatabaseZap, Share, Lightbulb, BarChart2, SearchCode } from "lucide-react";
 import Link from "next/link";
+import VideoPlayer from "@/components/landing/VideoPlayer";
+
+const benefits = [
+  {
+    icon: Lightbulb,
+    title: "AI-Powered Insights",
+    description: "Unlock hidden patterns and trends in your data with our intelligent assistant.",
+  },
+  {
+    icon: DatabaseZap,
+    title: "Centralized Data",
+    description: "Connect and manage all your data sources (CSV, SQL, APIs) in one place.",
+  },
+  {
+    icon: BarChart2,
+    title: "Interactive Visualizations",
+    description: "Understand your data better with dynamic charts and tables generated on the fly.",
+  },
+  {
+    icon: SearchCode,
+    title: "Searchable Knowledge Base",
+    description: "Build a comprehensive repository of your data insights, easily searchable.",
+  },
+  {
+    icon: Share,
+    title: "Seamless Collaboration",
+    description: "Share reports and insights with your team effortlessly.",
+  },
+];
 
 export default function LandingPage() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const benefits = [
-    {
-      icon: Lightbulb,
-      title: "AI-Powered Insights",
-      description: "Unlock hidden patterns and trends in your data with our intelligent assistant.",
-    },
-    {
-      icon: DatabaseZap,
-      title: "Centralized Data",
-      description: "Connect and manage all your data sources (CSV, SQL, APIs) in one place.",
-    },
-    {
-      icon: BarChart2,
-      title: "Interactive Visualizations",
-      description: "Understand your data better with dynamic charts and tables generated on the fly.",
-    },
-    {
-      icon: SearchCode,
-      title: "Searchable Knowledge Base",
-      description: "Build a comprehensive repository of your data insights, easily searchable.",
-    },
-    {
-      icon: Share,
-      title: "Seamless Collaboration",
-      description: "Share reports and insights with your team effortlessly.",
-    },
-  ];
-
-  const handlePlayClick = () => {
-    if (videoRef.current) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const handleVideoPause = () => {
-    // The 'controls' attribute can also trigger pause, so we sync state
-    setIsPlaying(false);
-  };
-
-  const handleVideoEnd = () => {
-    setIsPlaying(false);
-  };
-
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-background to-secondary/30">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2" prefetch={true}>
+        <Link href="/" className="flex items-center gap-2">
           <TrendingUp className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-primary">AgentY</h1>
         </Link>
@@ -71,7 +50,7 @@ export default function LandingPage() {
             <Link href="#benefits">Benefits</Link>
           </Button>
           <Button asChild>
-            <Link href="/register" prefetch={true}>Get Started</Link>
+            <Link href="/register">Get Started</Link>
           </Button>
         </nav>
       </header>
@@ -87,7 +66,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link href="/register" prefetch={true}>Register for Free</Link>
+              <Link href="/register">Register for Free</Link>
             </Button>
             <Button size="lg" variant="outline" className="border-accent text-accent hover:bg-accent/10">
               Watch Demo
@@ -102,22 +81,7 @@ export default function LandingPage() {
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
               Our intuitive platform makes it easy to connect your data sources and start discovering valuable insights in minutes.
             </p>
-            <div className="relative aspect-video max-w-4xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-black">
-              <video
-                ref={videoRef}
-                src="https://www.w3schools.com/html/mov_bbb.mp4"
-                onPause={handleVideoPause}
-                onEnded={handleVideoEnd}
-                controls={isPlaying}
-                className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
-              />
-              {!isPlaying && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg cursor-pointer group" onClick={handlePlayClick}>
-                   <PlayCircle className="h-20 w-20 sm:h-24 sm:w-24 text-white/70 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
-                   <span className="sr-only">Play Video</span>
-                </div>
-              )}
-            </div>
+            <VideoPlayer />
           </div>
         </section>
 
@@ -172,7 +136,7 @@ export default function LandingPage() {
             Join hundreds of businesses transforming their operations with AgentY. Start your free trial today.
           </p>
           <Button size="lg" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            <Link href="/register" prefetch={true}>Sign Up Now</Link>
+            <Link href="/register">Sign Up Now</Link>
           </Button>
         </section>
       </main>
@@ -181,8 +145,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} AgentY. All rights reserved.</p>
            <div className="mt-2 space-x-4">
-            <Link href="/privacy" className="hover:text-primary" prefetch={true}>Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-primary" prefetch={true}>Terms of Service</Link>
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms of Service</Link>
           </div>
         </div>
       </footer>
