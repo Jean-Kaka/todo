@@ -16,6 +16,9 @@ interface OnboardingState {
   dataSources: string[];
   importSampleData: boolean;
   onboardingFiles: File[];
+  datasetName: string;
+  datasetDescription: string;
+  datasetTags: string[];
   twoFactorEnabled: boolean;
   integrations: string[];
   invitedFriends: string[];
@@ -28,11 +31,15 @@ interface OnboardingState {
   toggleDataSource: (source: string) => void;
   setImportSampleData: (value: boolean) => void;
   setOnboardingFiles: (files: File[]) => void;
-  setTwoFactorEnabled: (value: boolean) => void; // A simplified representation
+  setDatasetName: (name: string) => void;
+  setDatasetDescription: (description: string) => void;
+  addDatasetTag: (tag: string) => void;
+  removeDatasetTag: (tag: string) => void;
+  setTwoFactorEnabled: (value: boolean) => void;
   toggleIntegration: (integration: string) => void;
   addInvitedFriend: (email: string) => void;
   
-  getState: () => Omit<OnboardingState, 'getState'>;
+  getState: () => Omit<OnboardingState, 'getState' | 'setState'>;
 }
 
 export const useOnboardingStore = create<OnboardingState>((set, get) => ({
@@ -44,6 +51,9 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   dataSources: [],
   importSampleData: true,
   onboardingFiles: [],
+  datasetName: '',
+  datasetDescription: '',
+  datasetTags: [],
   twoFactorEnabled: false,
   integrations: [],
   invitedFriends: [],
@@ -73,7 +83,19 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
         : [...state.dataSources, source],
   })),
   setImportSampleData: (value) => set({ importSampleData: value }),
-  setOnboardingFiles: (files) => set({ onboardingFiles: files }),
+  setOnboardingFiles: (files) => set((state) => ({
+    onboardingFiles: files,
+    // When files are added, derive a default dataset name if not already set
+    datasetName: state.datasetName || (files[0]?.name.replace(/\.[^/.]+$/, "") || "My New Dataset"),
+  })),
+  setDatasetName: (name) => set({ datasetName: name }),
+  setDatasetDescription: (description) => set({ datasetDescription: description }),
+  addDatasetTag: (tag) => set((state) => ({
+    datasetTags: state.datasetTags.includes(tag) ? state.datasetTags : [...state.datasetTags, tag],
+  })),
+  removeDatasetTag: (tagToRemove) => set((state) => ({
+    datasetTags: state.datasetTags.filter((tag) => tag !== tagToRemove),
+  })),
   setTwoFactorEnabled: (value) => set({ twoFactorEnabled: value }),
   toggleIntegration: (integration) => set((state) => ({
     integrations: state.integrations.includes(integration)
