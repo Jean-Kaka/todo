@@ -37,37 +37,38 @@ export default function RoleStep({ onNext }: RoleStepProps) {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {roles.map((r) => (
-          <div key={r.id}>
-            <Card
-              onClick={() => setRole(r.id)}
-              className={cn(
-                "cursor-pointer transition-all hover:shadow-md",
-                role === r.id ? "ring-2 ring-primary shadow-md" : "ring-1 ring-border"
-              )}
-            >
-              <CardContent className="p-4 flex items-center gap-4">
-                <r.icon className={cn("h-8 w-8", role === r.id ? "text-primary" : "text-muted-foreground")} />
-                <div>
-                  <h3 className="font-medium">{r.name}</h3>
-                  <p className="text-sm text-muted-foreground">{r.description}</p>
-                </div>
-              </CardContent>
-            </Card>
-            {r.id === 'other' && role === 'other' && (
-              <div className="mt-4 pl-2 pr-2">
-                <Input 
-                  placeholder="Please specify your role"
-                  value={otherRole}
-                  onChange={(e) => setOtherRole(e.target.value)}
-                  autoFocus
-                />
-              </div>
+          <Card
+            key={r.id}
+            onClick={() => setRole(r.id)}
+            className={cn(
+              "cursor-pointer transition-all hover:shadow-md h-full",
+              role === r.id ? "ring-2 ring-primary shadow-md" : "ring-1 ring-border"
             )}
-          </div>
+          >
+            <CardContent className="p-4 flex items-center gap-4">
+              <r.icon className={cn("h-8 w-8", role === r.id ? "text-primary" : "text-muted-foreground")} />
+              <div>
+                <h3 className="font-medium">{r.name}</h3>
+                <p className="text-sm text-muted-foreground">{r.description}</p>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
+
+      {role === 'other' && (
+        <div className="mt-4">
+          <Input 
+            placeholder="Please specify your role"
+            value={otherRole}
+            onChange={(e) => setOtherRole(e.target.value)}
+            autoFocus
+          />
+        </div>
+      )}
+      
       <Button onClick={handleNext} disabled={isNextDisabled} className="w-full mt-8 bg-primary hover:bg-primary/90">
         Next
       </Button>
