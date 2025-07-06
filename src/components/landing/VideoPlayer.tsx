@@ -32,16 +32,17 @@ export default function VideoPlayer() {
         loop
         muted
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
+        className="absolute top-0 left-0 w-full h-full object-cover"
       />
       {!isPlaying && (
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg cursor-pointer group"
+        <button
+          type="button"
+          className="absolute inset-0 flex h-full w-full items-center justify-center bg-black/30 cursor-pointer group"
           onClick={handlePlayClick}
+          aria-label="Play Video"
         >
           <PlayCircle className="h-20 w-20 sm:h-24 sm:w-24 text-white/70 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
-          <span className="sr-only">Play Video</span>
-        </div>
+        </button>
       )}
     </div>
   );
