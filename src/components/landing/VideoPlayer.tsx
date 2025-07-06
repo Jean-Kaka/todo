@@ -20,18 +20,18 @@ export default function VideoPlayer() {
     setIsPlaying(false);
   };
 
-  const handleVideoEnd = () => {
-    setIsPlaying(false);
-  };
-
   return (
     <div className="relative aspect-video max-w-4xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-black">
       <video
         ref={videoRef}
-        src="https://www.w3schools.com/html/mov_bbb.mp4"
+        src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-brain-with-thinking-process-42994-large.mp4"
+        poster="https://placehold.co/1280x720.png"
+        data-ai-hint="digital brain"
         onPause={handleVideoPause}
-        onEnded={handleVideoEnd}
         controls={isPlaying}
+        loop
+        muted
+        playsInline
         className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
       />
       {!isPlaying && (
