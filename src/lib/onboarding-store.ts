@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 
 export interface OnboardingFile {
@@ -88,7 +89,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   addUploadedFiles: (filesToAdd: File[]) => set(state => {
     const newFiles = filesToAdd.map(file => ({
         file,
-        name: file.name.replace(/\.[^/.]+$/, ""),
+        name: "",
         description: "",
         tags: []
     }));
