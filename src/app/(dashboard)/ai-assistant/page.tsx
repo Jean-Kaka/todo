@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -280,129 +279,127 @@ export default function AIAssistantPage() {
   };
 
   return (
-    <AppLayout>
-      <div className="flex h-full">
-        {/* Chat History Sidebar */}
-        <Card className="w-1/4 min-w-[250px] hidden md:flex flex-col mr-4">
-          <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
-            <CardTitle className="text-lg font-headline flex items-center gap-2"><History className="h-5 w-5"/> Chat History</CardTitle>
-            <Button variant="outline" size="sm" onClick={startNewChat}>New Chat</Button>
-          </CardHeader>
-          <CardContent className="p-0 flex-grow">
-            <ScrollArea className="h-full p-2">
-              {chatHistory.length === 0 && <p className="p-4 text-sm text-muted-foreground">No chat history yet.</p>}
-              {chatHistory.map((chat) => (
-                <Button
-                  key={chat.id}
-                  variant={activeChatId === chat.id ? "secondary" : "ghost"}
-                  className="w-full justify-start mb-1 text-left h-auto py-2"
-                  onClick={() => selectChat(chat.id)}
-                >
-                  <div className="truncate">
-                    <p className="font-medium text-sm">{chat.title}</p>
-                    <p className="text-xs text-muted-foreground">{chat.timestamp.toLocaleDateString()}</p>
-                  </div>
-                </Button>
-              ))}
-            </ScrollArea>
-          </CardContent>
-        </Card>
+    <div className="flex h-full">
+      {/* Chat History Sidebar */}
+      <Card className="w-1/4 min-w-[250px] hidden md:flex flex-col mr-4">
+        <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
+          <CardTitle className="text-lg font-headline flex items-center gap-2"><History className="h-5 w-5"/> Chat History</CardTitle>
+          <Button variant="outline" size="sm" onClick={startNewChat}>New Chat</Button>
+        </CardHeader>
+        <CardContent className="p-0 flex-grow">
+          <ScrollArea className="h-full p-2">
+            {chatHistory.length === 0 && <p className="p-4 text-sm text-muted-foreground">No chat history yet.</p>}
+            {chatHistory.map((chat) => (
+              <Button
+                key={chat.id}
+                variant={activeChatId === chat.id ? "secondary" : "ghost"}
+                className="w-full justify-start mb-1 text-left h-auto py-2"
+                onClick={() => selectChat(chat.id)}
+              >
+                <div className="truncate">
+                  <p className="font-medium text-sm">{chat.title}</p>
+                  <p className="text-xs text-muted-foreground">{chat.timestamp.toLocaleDateString()}</p>
+                </div>
+              </Button>
+            ))}
+          </ScrollArea>
+        </CardContent>
+      </Card>
 
-        {/* Main Chat Area */}
-        <Card className="flex-1 flex flex-col shadow-lg">
-          <CardHeader className="p-4 border-b">
-            <CardTitle className="text-lg font-headline flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-primary" />
-              AI Assistant
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 overflow-hidden p-0">
-            <ScrollArea className="h-full p-4 space-y-4">
-              {messages.length === 0 && (
-                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-                  <MessageSquare className="h-12 w-12 mb-4"/>
-                  <h3 className="text-lg font-semibold">Start a conversation</h3>
-                  <p className="text-sm">Ask a question about your data to begin.</p>
-                </div>
-              )}
-              {messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`flex gap-3 max-w-[80%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'items-start'}`}>
-                    <Avatar className="h-8 w-8 border">
-                       {msg.sender === 'user' ? <User className="h-5 w-5 m-auto text-muted-foreground"/> : <Bot className="h-5 w-5 m-auto text-primary"/>}
-                    </Avatar>
-                    <div className={`p-3 rounded-lg shadow-sm ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card border'}`}>
-                      <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
-                      {msg.chart && msg.chart.data && (
-                        <div className="mt-3 p-2 bg-background/50 rounded-md border">
-                          {renderChart(msg.chart.type, msg.chart.data, msg.chart.config)}
-                        </div>
-                      )}
-                      {msg.table && (
-                         <div className="mt-3 overflow-x-auto bg-background/50 p-2 rounded-md border">
-                            <table className="min-w-full text-xs bg-transparent">
-                                <thead className="border-b">
-                                    <tr className="text-left">
-                                    {msg.table.headers.map(header => <th key={header} className="p-2 font-medium">{header}</th>)}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {msg.table.rows.map((row, rowIndex) => (
-                                        <tr key={rowIndex} className="border-b last:border-none">
-                                        {row.map((cell, cellIndex) => <td key={cellIndex} className="p-2">{cell}</td>)}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                         </div>
-                      )}
-                      <div className="text-xs mt-2 opacity-70">
-                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </div>
-                       {msg.sender === 'ai' && (
-                        <div className="mt-2 -ml-1 flex items-center gap-1">
-                          {msg.insightId && (
-                            <Button variant="ghost" size="xs" onClick={() => handleBookmark(msg)} className="p-1 h-auto text-xs">
-                              <Bookmark className="h-3 w-3 mr-1" /> Bookmark
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </ScrollArea>
-          </CardContent>
-          <div className="p-4 border-t bg-background">
-             {suggestions.length > 0 && (
-              <div className="mb-2 flex flex-wrap gap-2">
-                <span className="text-sm text-muted-foreground flex items-center gap-1"><Lightbulb className="h-4 w-4 text-yellow-500"/> Suggestions:</span>
-                {suggestions.map((s, i) => (
-                  <Button key={i} variant="outline" size="sm" onClick={() => handleSuggestionClick(s)} className="text-xs">
-                    {s}
-                  </Button>
-                ))}
+      {/* Main Chat Area */}
+      <Card className="flex-1 flex flex-col shadow-lg">
+        <CardHeader className="p-4 border-b">
+          <CardTitle className="text-lg font-headline flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-primary" />
+            AI Assistant
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 overflow-hidden p-0">
+          <ScrollArea className="h-full p-4 space-y-4">
+            {messages.length === 0 && (
+              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <MessageSquare className="h-12 w-12 mb-4"/>
+                <h3 className="text-lg font-semibold">Start a conversation</h3>
+                <p className="text-sm">Ask a question about your data to begin.</p>
               </div>
             )}
-            <div className="flex items-center gap-2">
-              <Textarea
-                value={currentMessage}
-                onChange={handleInputChange}
-                placeholder="Ask something about your data... (e.g., 'Show me top 5 products by sales')"
-                className="min-h-[60px] resize-none"
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }}}
-                disabled={isLoading}
-              />
-              <Button onClick={handleSendMessage} disabled={isLoading || !currentMessage.trim()} className="h-[60px]">
-                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-                <span className="sr-only">Send</span>
-              </Button>
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`flex gap-3 max-w-[80%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'items-start'}`}>
+                  <Avatar className="h-8 w-8 border">
+                     {msg.sender === 'user' ? <User className="h-5 w-5 m-auto text-muted-foreground"/> : <Bot className="h-5 w-5 m-auto text-primary"/>}
+                  </Avatar>
+                  <div className={`p-3 rounded-lg shadow-sm ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card border'}`}>
+                    <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                    {msg.chart && msg.chart.data && (
+                      <div className="mt-3 p-2 bg-background/50 rounded-md border">
+                        {renderChart(msg.chart.type, msg.chart.data, msg.chart.config)}
+                      </div>
+                    )}
+                    {msg.table && (
+                       <div className="mt-3 overflow-x-auto bg-background/50 p-2 rounded-md border">
+                          <table className="min-w-full text-xs bg-transparent">
+                              <thead className="border-b">
+                                  <tr className="text-left">
+                                  {msg.table.headers.map(header => <th key={header} className="p-2 font-medium">{header}</th>)}
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {msg.table.rows.map((row, rowIndex) => (
+                                      <tr key={rowIndex} className="border-b last:border-none">
+                                      {row.map((cell, cellIndex) => <td key={cellIndex} className="p-2">{cell}</td>)}
+                                      </tr>
+                                  ))}
+                              </tbody>
+                          </table>
+                       </div>
+                    )}
+                    <div className="text-xs mt-2 opacity-70">
+                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                     {msg.sender === 'ai' && (
+                      <div className="mt-2 -ml-1 flex items-center gap-1">
+                        {msg.insightId && (
+                          <Button variant="ghost" size="xs" onClick={() => handleBookmark(msg)} className="p-1 h-auto text-xs">
+                            <Bookmark className="h-3 w-3 mr-1" /> Bookmark
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </ScrollArea>
+        </CardContent>
+        <div className="p-4 border-t bg-background">
+           {suggestions.length > 0 && (
+            <div className="mb-2 flex flex-wrap gap-2">
+              <span className="text-sm text-muted-foreground flex items-center gap-1"><Lightbulb className="h-4 w-4 text-yellow-500"/> Suggestions:</span>
+              {suggestions.map((s, i) => (
+                <Button key={i} variant="outline" size="sm" onClick={() => handleSuggestionClick(s)} className="text-xs">
+                  {s}
+                </Button>
+              ))}
             </div>
+          )}
+          <div className="flex items-center gap-2">
+            <Textarea
+              value={currentMessage}
+              onChange={handleInputChange}
+              placeholder="Ask something about your data... (e.g., 'Show me top 5 products by sales')"
+              className="min-h-[60px] resize-none"
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }}}
+              disabled={isLoading}
+            />
+            <Button onClick={handleSendMessage} disabled={isLoading || !currentMessage.trim()} className="h-[60px]">
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+              <span className="sr-only">Send</span>
+            </Button>
           </div>
-        </Card>
-      </div>
-    </AppLayout>
+        </div>
+      </Card>
+    </div>
   );
 }
