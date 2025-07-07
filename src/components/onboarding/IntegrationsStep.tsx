@@ -30,7 +30,18 @@ export default function IntegrationsStep({ onBack }: IntegrationsStepProps) {
     // Sanitize file objects for logging
     const loggedState = {
       ...finalState,
-      onboardingFiles: finalState.onboardingFiles.map(f => ({ name: f.name, size: f.size, type: f.type }))
+      onboardingFiles: finalState.onboardingFiles.map(f => ({ 
+        originalFile: {
+          name: f.file.name, 
+          size: f.file.size, 
+          type: f.file.type
+        },
+        labels: { 
+          name: f.name, 
+          description: f.description, 
+          tags: f.tags 
+        } 
+      }))
     };
     console.log("Onboarding complete. Final state:", loggedState);
     router.push("/onboarding/constructing-dashboard");

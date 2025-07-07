@@ -1,5 +1,12 @@
 import { create } from 'zustand';
 
+export interface OnboardingFile {
+  file: File;
+  name: string;
+  description: string;
+  tags: string[];
+}
+
 interface OnboardingState {
   role: string | null;
   otherRole: string;
@@ -15,10 +22,7 @@ interface OnboardingState {
   kpis: string[];
   dataSources: string[];
   importSampleData: boolean;
-  onboardingFiles: File[];
-  datasetName: string;
-  datasetDescription: string;
-  datasetTags: string[];
+  onboardingFiles: OnboardingFile[];
   twoFactorEnabled: boolean;
   integrations: string[];
   invitedFriends: string[];
@@ -30,11 +34,11 @@ interface OnboardingState {
   toggleKpi: (kpi: string) => void;
   toggleDataSource: (source: string) => void;
   setImportSampleData: (value: boolean) => void;
-  setOnboardingFiles: (files: File[]) => void;
-  setDatasetName: (name: string) => void;
-  setDatasetDescription: (description: string) => void;
-  addDatasetTag: (tag: string) => void;
-  removeDatasetTag: (tag: string) => void;
+  
+  addUploadedFiles: (files: File[]) => void;
+  removeUploadedFile: (index: number) => void;
+  updateUploadedFile: (index: number, data: Partial<Omit<OnboardingFile, 'file'>>) => void;
+
   setTwoFactorEnabled: (value: boolean) => void;
   toggleIntegration: (integration: string) => void;
   addInvitedFriend: (email: string) => void;
@@ -51,9 +55,6 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   dataSources: [],
   importSampleData: true,
   onboardingFiles: [],
-  datasetName: '',
-  datasetDescription: '',
-  datasetTags: [],
   twoFactorEnabled: false,
   integrations: [],
   invitedFriends: [],
@@ -83,19 +84,29 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
         : [...state.dataSources, source],
   })),
   setImportSampleData: (value) => set({ importSampleData: value }),
-  setOnboardingFiles: (files) => set((state) => ({
-    onboardingFiles: files,
-    // When files are added, derive a default dataset name if not already set
-    datasetName: state.datasetName || (files[0]?.name.replace(/\.[^/.]+$/, "") || "My New Dataset"),
+  
+  addUploadedFiles: (filesToAdd: File[]) => set(state => {
+    const newFiles = filesToAdd.map(file => ({
+        file,
+        name: file.name.replace(/\.[^/.]+$/, ""),
+        description: "",
+        tags: []
+    }));
+    return { onboardingFiles: [...state.onboardingFiles, ...newFiles] };
+  }),
+
+  removeUploadedFile: (indexToRemove: number) => set(state => ({
+      onboardingFiles: state.onboardingFiles.filter((_, index) => index !== indexToRemove)
   })),
-  setDatasetName: (name) => set({ datasetName: name }),
-  setDatasetDescription: (description) => set({ datasetDescription: description }),
-  addDatasetTag: (tag) => set((state) => ({
-    datasetTags: state.datasetTags.includes(tag) ? state.datasetTags : [...state.datasetTags, tag],
-  })),
-  removeDatasetTag: (tagToRemove) => set((state) => ({
-    datasetTags: state.datasetTags.filter((tag) => tag !== tagToRemove),
-  })),
+
+  updateUploadedFile: (indexToUpdate: number, data: Partial<Omit<OnboardingFile, 'file'>>) => {
+    set(state => ({
+      onboardingFiles: state.onboardingFiles.map((item, index) =>
+        index === indexToUpdate ? { ...item, ...data } : item
+      ),
+    }));
+  },
+
   setTwoFactorEnabled: (value) => set({ twoFactorEnabled: value }),
   toggleIntegration: (integration) => set((state) => ({
     integrations: state.integrations.includes(integration)

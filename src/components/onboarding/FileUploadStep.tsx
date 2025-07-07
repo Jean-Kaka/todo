@@ -15,12 +15,12 @@ interface FileUploadStepProps {
 }
 
 export default function FileUploadStep({ onNext, onBack }: FileUploadStepProps) {
-  const { onboardingFiles, setOnboardingFiles } = useOnboardingStore();
+  const { onboardingFiles, addUploadedFiles, removeUploadedFile } = useOnboardingStore();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleFiles = (newFiles: FileList | null) => {
     if (newFiles) {
-      setOnboardingFiles([...onboardingFiles, ...Array.from(newFiles)]);
+      addUploadedFiles(Array.from(newFiles));
     }
   };
 
@@ -45,10 +45,6 @@ export default function FileUploadStep({ onNext, onBack }: FileUploadStepProps) 
     event.preventDefault();
     setIsDraggingOver(false);
     handleFiles(event.dataTransfer.files);
-  };
-
-  const handleRemoveFile = (fileNameToRemove: string, fileIndexToRemove: number) => {
-    setOnboardingFiles(onboardingFiles.filter((file, index) => file.name !== fileNameToRemove || index !== fileIndexToRemove));
   };
 
   return (
@@ -85,13 +81,13 @@ export default function FileUploadStep({ onNext, onBack }: FileUploadStepProps) 
           <div className="mt-4 text-sm max-h-40 overflow-y-auto">
             <h4 className="font-medium text-foreground">Selected Files:</h4>
             <ul className="mt-2 space-y-2">
-              {onboardingFiles.map((file, index) => (
-                <li key={`${file.name}-${index}`} className="flex items-center justify-between rounded-md border p-2 bg-muted/50 text-muted-foreground">
+              {onboardingFiles.map((onboardingFile, index) => (
+                <li key={`${onboardingFile.file.name}-${index}`} className="flex items-center justify-between rounded-md border p-2 bg-muted/50 text-muted-foreground">
                   <div className="truncate pr-2">
-                    <span className="text-foreground font-medium truncate">{file.name}</span>
-                    <span className="ml-2">({ (file.size / (1024*1024)).toFixed(2) } MB)</span>
+                    <span className="text-foreground font-medium truncate">{onboardingFile.file.name}</span>
+                    <span className="ml-2">({ (onboardingFile.file.size / (1024*1024)).toFixed(2) } MB)</span>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => handleRemoveFile(file.name, index)} className="text-destructive hover:text-destructive shrink-0">
+                  <Button variant="ghost" size="sm" onClick={() => removeUploadedFile(index)} className="text-destructive hover:text-destructive shrink-0">
                     Remove
                   </Button>
                 </li>
@@ -105,7 +101,7 @@ export default function FileUploadStep({ onNext, onBack }: FileUploadStepProps) 
         <Button variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button onClick={onNext} className="bg-primary hover:bg-primary/90">
+        <Button onClick={onNext} disabled={onboardingFiles.length === 0} className="bg-primary hover:bg-primary/90">
           Next
         </Button>
       </div>
