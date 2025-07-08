@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UploadCloud, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUploadStore } from "@/lib/upload-store";
 
 const uploadSteps = [
   { id: "source", name: "Choose Source" },
@@ -21,14 +22,13 @@ const uploadSteps = [
 
 export default function UploadFilePage() {
   const router = useRouter();
-  const [files, setFiles] = useState<File[]>([]);
+  const { files, addFiles, removeFile } = useUploadStore();
   const [isUploading, setIsUploading] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleFiles = (newFiles: FileList | null) => {
     if (newFiles) {
-      // Allow adding to existing files instead of replacing
-      setFiles(prevFiles => [...prevFiles, ...Array.from(newFiles)]);
+      addFiles(Array.from(newFiles));
     }
   };
 
@@ -46,7 +46,7 @@ export default function UploadFilePage() {
     // Simulate upload
     setTimeout(() => {
       setIsUploading(false);
-      console.log("Files selected:", files.map(f => f.name));
+      console.log("Files selected:", files.map(f => f.file.name));
       // Store file or upload and then navigate
       router.push("/upload/preview");
     }, 1500);
@@ -68,8 +68,8 @@ export default function UploadFilePage() {
     handleFiles(event.dataTransfer.files);
   };
 
-  const handleRemoveFile = (fileNameToRemove: string, fileIndexToRemove: number) => {
-    setFiles(prevFiles => prevFiles.filter((file, index) => file.name !== fileNameToRemove || index !== fileIndexToRemove));
+  const handleRemoveFile = (fileIndexToRemove: number) => {
+    removeFile(fileIndexToRemove);
   };
 
 
@@ -118,13 +118,13 @@ export default function UploadFilePage() {
               <div className="mt-4 text-sm">
                 <h4 className="font-medium text-foreground">Selected Files:</h4>
                 <ul className="mt-2 space-y-2">
-                  {files.map((file, index) => (
-                    <li key={`${file.name}-${index}`} className="flex items-center justify-between rounded-md border p-2 bg-muted/50 text-muted-foreground">
+                  {files.map((uploadedFile, index) => (
+                    <li key={`${uploadedFile.file.name}-${index}`} className="flex items-center justify-between rounded-md border p-2 bg-muted/50 text-muted-foreground">
                       <div className="truncate pr-2">
-                        <span className="text-foreground font-medium truncate">{file.name}</span>
-                        <span className="ml-2">({ (file.size / (1024*1024)).toFixed(2) } MB)</span>
+                        <span className="text-foreground font-medium truncate">{uploadedFile.file.name}</span>
+                        <span className="ml-2">({ (uploadedFile.file.size / (1024*1024)).toFixed(2) } MB)</span>
                       </div>
-                      <Button variant="ghost" size="sm" onClick={() => handleRemoveFile(file.name, index)} className="text-destructive hover:text-destructive shrink-0">
+                      <Button variant="ghost" size="sm" onClick={() => handleRemoveFile(index)} className="text-destructive hover:text-destructive shrink-0">
                         Remove
                       </Button>
                     </li>

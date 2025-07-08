@@ -1,7 +1,7 @@
 // src/app/upload/confirm/page.tsx
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import UploadStepper from "@/components/upload/UploadStepper";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, Tag, Info, Loader2 } from "lucide-react";
+import { CheckCircle, Tag, Loader2, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useUploadStore } from "@/lib/upload-store";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useToast } from "@/hooks/use-toast";
 
 const uploadSteps = [
   { id: "source", name: "Choose Source" },
@@ -20,41 +23,111 @@ const uploadSteps = [
   { id: "confirm", name: "Confirm & Finish" },
 ];
 
+// Sub-component for the form for a single file
+const FileLabelForm = ({ fileIndex }: { fileIndex: number }) => {
+    const { files, updateFile } = useUploadStore();
+    const fileData = files[fileIndex];
+    const [currentTag, setCurrentTag] = useState("");
+
+    const handleAddTag = () => {
+        if (currentTag.trim() && !fileData.tags.includes(currentTag.trim())) {
+            updateFile(fileIndex, { tags: [...fileData.tags, currentTag.trim()] });
+            setCurrentTag("");
+        }
+    };
+    
+    const handleRemoveTag = (tagToRemove: string) => {
+        updateFile(fileIndex, { tags: fileData.tags.filter(tag => tag !== tagToRemove) });
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        updateFile(fileIndex, { [e.target.name]: e.target.value });
+    };
+
+    if (!fileData) return null;
+
+    return (
+        <div className="space-y-4 pt-2">
+            <div>
+                <Label htmlFor={`name-${fileIndex}`}>Dataset Name</Label>
+                <Input 
+                    id={`name-${fileIndex}`}
+                    name="name"
+                    value={fileData.name}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Q4 Sales Data"
+                />
+            </div>
+            <div>
+                <Label htmlFor={`description-${fileIndex}`}>Description (Optional)</Label>
+                <Textarea 
+                    id={`description-${fileIndex}`}
+                    name="description"
+                    value={fileData.description}
+                    onChange={handleInputChange}
+                    rows={2}
+                    placeholder="Briefly describe this dataset..."
+                />
+            </div>
+            <div>
+                <Label htmlFor={`tags-${fileIndex}`}>Tags (Optional)</Label>
+                <div className="flex gap-2 items-center">
+                    <Input 
+                        id={`tags-${fileIndex}`} 
+                        value={currentTag}
+                        onChange={(e) => setCurrentTag(e.target.value)}
+                        placeholder="Add a tag and press Enter" 
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddTag();}}}
+                    />
+                    <Button type="button" variant="outline" size="sm" onClick={handleAddTag}>Add</Button>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1">
+                    {fileData.tags.map(tag => (
+                        <Badge key={tag} variant="secondary">
+                            {tag}
+                            <button onClick={() => handleRemoveTag(tag)} className="ml-1.5 text-muted-foreground hover:text-foreground text-lg leading-none p-0 focus:outline-none" aria-label={`Remove ${tag} tag`}>
+                                &times;
+                            </button>
+                        </Badge>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export default function UploadConfirmPage() {
   const router = useRouter();
-  const [datasetName, setDatasetName] = useState("My New Dataset"); // Default or derive from filename/source
-  const [description, setDescription] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [currentTag, setCurrentTag] = useState("");
+  const { files, clearFiles } = useUploadStore();
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const handleAddTag = () => {
-    if (currentTag.trim() && !tags.includes(currentTag.trim())) {
-      setTags([...tags, currentTag.trim()]);
-      setCurrentTag("");
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
+  const { toast } = useToast();
 
   const handleFinishUpload = () => {
     setIsProcessing(true);
-    console.log("Dataset Name:", datasetName);
-    console.log("Description:", description);
-    console.log("Tags:", tags);
+    console.log("Finalizing upload for these files:", files.map(f => ({
+        name: f.name,
+        description: f.description,
+        tags: f.tags,
+        originalFileName: f.file.name,
+        size: f.file.size
+    })));
     // Simulate final processing and saving
     setTimeout(() => {
       setIsProcessing(false);
-      // Add toast message for success
-      router.push("/dashboard"); // Or to knowledge base page for the new dataset
+      toast({
+        title: "Upload Successful!",
+        description: `${files.length} file(s) have been added to your Knowledge Base.`,
+      });
+      clearFiles();
+      router.push("/knowledge-base");
     }, 2500);
   };
   
   const handleBack = () => {
     router.push("/upload/clean");
   };
+
+  const isFinishDisabled = files.some(f => !f.name.trim()) || files.length === 0 || isProcessing;
 
   return (
     <div className="space-y-8">
@@ -66,71 +139,39 @@ export default function UploadConfirmPage() {
             <CheckCircle className="h-6 w-6 text-primary"/>
             <CardTitle className="text-2xl font-headline">Confirm & Finish Upload</CardTitle>
           </div>
-          <CardDescription>Provide final details for your new dataset.</CardDescription>
+          <CardDescription>Provide final details for your new dataset(s). A name is required for each.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div>
-            <Label htmlFor="datasetName" className="flex items-center gap-1 mb-1"><Info className="h-4 w-4 text-muted-foreground"/> Dataset Name</Label>
-            <Input 
-              id="datasetName" 
-              value={datasetName} 
-              onChange={(e) => setDatasetName(e.target.value)}
-              placeholder="e.g., Q4 Sales Data, Customer Churn Analysis" 
-            />
+          
+          <div className="space-y-2">
+            <h3 className="text-lg font-medium">Uploaded Datasets ({files.length})</h3>
+            {files.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No files were uploaded. Please go back to the upload step.</p>
+            ) : (
+                <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
+                {files.map((item, index) => (
+                    <AccordionItem value={`item-${index}`} key={`${item.file.name}-${index}`}>
+                    <AccordionTrigger>
+                        <div className="flex items-center gap-2 truncate">
+                        <FileText className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate font-medium">{item.name || item.file.name}</span>
+                        </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                        <FileLabelForm fileIndex={index} />
+                    </AccordionContent>
+                    </AccordionItem>
+                ))}
+                </Accordion>
+            )}
           </div>
           
-          <div>
-            <Label htmlFor="description" className="flex items-center gap-1 mb-1"><Info className="h-4 w-4 text-muted-foreground"/> Description (Optional)</Label>
-            <Textarea 
-              id="description" 
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Briefly describe this dataset, its source, or purpose."
-              rows={3}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="tags" className="flex items-center gap-1 mb-1"><Tag className="h-4 w-4 text-muted-foreground"/> Tags (Optional)</Label>
-            <div className="flex gap-2 items-center">
-              <Input 
-                id="tags" 
-                value={currentTag}
-                onChange={(e) => setCurrentTag(e.target.value)}
-                placeholder="Add tags like 'finance', 'marketing', 'q4'" 
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddTag();}}}
-              />
-              <Button type="button" variant="outline" onClick={handleAddTag}>Add Tag</Button>
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {tags.map(tag => (
-                <Badge key={tag} variant="secondary" className="text-sm">
-                  {tag}
-                  <button onClick={() => handleRemoveTag(tag)} className="ml-1.5 text-muted-foreground hover:text-foreground">
-                    &times;
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          </div>
-          
-          <div className="pt-4 border-t">
-            <h4 className="font-medium mb-2">Upload Summary (Mock)</h4>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                <li>Source Type: File (CSV)</li>
-                <li>Original Rows: 10,050</li>
-                <li>Columns Mapped: 8</li>
-                <li>Cleaning Steps Applied: Removed Duplicates, Trimmed Whitespace</li>
-                <li>Estimated Final Rows: 9,875</li>
-            </ul>
-          </div>
-
           <div className="flex justify-between items-center pt-6">
             <Button variant="outline" onClick={handleBack} disabled={isProcessing}>
               Back to Cleaning
             </Button>
-            <Button onClick={handleFinishUpload} disabled={isProcessing || !datasetName.trim()} className="bg-primary hover:bg-primary/90">
-              {isProcessing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</> : "Finish Upload & View Dataset"}
+            <Button onClick={handleFinishUpload} disabled={isFinishDisabled} className="bg-primary hover:bg-primary/90">
+              {isProcessing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</> : `Finish Upload (${files.length})`}
             </Button>
           </div>
         </CardContent>
