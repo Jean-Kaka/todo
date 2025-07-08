@@ -1,4 +1,4 @@
-// src/app/insight-hub/page.tsx
+// src/app/(dashboard)/insight-hub/page.tsx
 "use client";
 
 import ReportCard, { ReportCardProps } from "@/components/insights/ReportCard";
@@ -151,14 +151,14 @@ export default function InsightHubPage() {
   };
 
   const handleExport = (insight: ReportCardProps) => {
-    if (!insight.chartData) {
+    if (!insight.chartData || insight.chartData.length === 0) {
       alert("No data to export for this insight.");
       return;
     }
     const headers = Object.keys(insight.chartData[0]);
     const csvContent = [
       headers.join(','),
-      ...insight.chartData.map(row => headers.map(header => row[header]).join(','))
+      ...insight.chartData.map(row => headers.map(header => row[header as keyof typeof row]).join(','))
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -172,103 +172,117 @@ export default function InsightHubPage() {
   };
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-              <h1 className="text-3xl font-bold font-headline">Insight Hub</h1>
-              <p className="text-muted-foreground mt-1">Browse, search, and manage all your saved insights and reports.</p>
-          </div>
-          <div className="flex gap-2">
-               <Button asChild><Link href="/ai-assistant"><PlusCircle className="mr-2 h-4 w-4" /> Generate Insight</Link></Button>
-          </div>
-      </header>
-      
-      <div className="p-4 border rounded-lg bg-card flex flex-col md:flex-row gap-4">
-         <div className="relative flex-grow">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            placeholder="Search insights..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-full sm:w-auto md:w-[150px]">
-              <ListFilter className="h-4 w-4 mr-2 text-muted-foreground"/>
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="chart">Chart</SelectItem>
-              <SelectItem value="table">Table</SelectItem>
-              <SelectItem value="summary">Summary</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filterTag} onValueChange={setFilterTag}>
-            <SelectTrigger className="w-full sm:w-auto md:w-[150px]">
-              <Tag className="h-4 w-4 mr-2 text-muted-foreground"/>
-              <SelectValue placeholder="Filter by tag" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Tags</SelectItem>
-              {allTags.map(tag => <SelectItem key={tag} value={tag}>{tag}</SelectItem>)}
-            </SelectContent>
-          </Select>
-           <Select value={filterFolder} onValueChange={setFilterFolder}>
-            <SelectTrigger className="w-full sm:w-auto md:w-[180px]">
-              <Folder className="h-4 w-4 mr-2 text-muted-foreground"/>
-              <SelectValue placeholder="Filter by folder" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Folders</SelectItem>
-              {allFolders.map(folder => <SelectItem key={folder} value={folder}>{folder}</SelectItem>)}
-               <SelectItem value="none">Uncategorized</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div>
-          <h2 className="text-xl font-semibold font-headline mb-4">
-              {filteredInsights.length} {filteredInsights.length === 1 ? 'Insight' : 'Insights'} Found
-          </h2>
-          {filteredInsights.length === 0 ? (
-             <div className="text-center py-16 border-2 border-dashed rounded-lg">
-              <BarChart2 className="mx-auto h-12 w-12 text-muted-foreground" />
-              <h3 className="mt-4 text-xl font-semibold">No Insights Found</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Try adjusting your filters or generate a new insight from the AI Assistant.
-              </p>
-              <Button className="mt-6" asChild><Link href="/ai-assistant">Generate Insight</Link></Button>
+    <>
+      <div className="space-y-8">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 className="text-3xl font-bold font-headline">Insight Hub</h1>
+                <p className="text-muted-foreground mt-1">Browse, search, and manage all your saved insights and reports.</p>
             </div>
-          ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredInsights.map(insight => (
-                  <ReportCard 
-                    key={insight.id} 
-                    {...insight} 
-                    onEdit={() => setEditingInsight(insight)}
-                    onShare={() => setSharingInsight(insight)}
-                    onExport={() => handleExport(insight)}
-                  />
-                ))}
+            <div className="flex gap-2">
+                 <Button asChild><Link href="/ai-assistant"><PlusCircle className="mr-2 h-4 w-4" /> Generate Insight</Link></Button>
+            </div>
+        </header>
+        
+        <div className="p-4 border rounded-lg bg-card flex flex-col md:flex-row gap-4">
+           <div className="relative flex-grow">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              placeholder="Search insights..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="w-full sm:w-auto md:w-[150px]">
+                <ListFilter className="h-4 w-4 mr-2 text-muted-foreground"/>
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="chart">Chart</SelectItem>
+                <SelectItem value="table">Table</SelectItem>
+                <SelectItem value="summary">Summary</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterTag} onValueChange={setFilterTag}>
+              <SelectTrigger className="w-full sm:w-auto md:w-[150px]">
+                <Tag className="h-4 w-4 mr-2 text-muted-foreground"/>
+                <SelectValue placeholder="Filter by tag" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Tags</SelectItem>
+                {allTags.map(tag => <SelectItem key={tag} value={tag}>{tag}</SelectItem>)}
+              </SelectContent>
+            </Select>
+             <Select value={filterFolder} onValueChange={setFilterFolder}>
+              <SelectTrigger className="w-full sm:w-auto md:w-[180px]">
+                <Folder className="h-4 w-4 mr-2 text-muted-foreground"/>
+                <SelectValue placeholder="Filter by folder" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Folders</SelectItem>
+                {allFolders.map(folder => <SelectItem key={folder} value={folder}>{folder}</SelectItem>)}
+                 <SelectItem value="none">Uncategorized</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div>
+            <h2 className="text-xl font-semibold font-headline mb-4">
+                {filteredInsights.length} {filteredInsights.length === 1 ? 'Insight' : 'Insights'} Found
+            </h2>
+            {filteredInsights.length === 0 ? (
+               <div className="text-center py-16 border-2 border-dashed rounded-lg">
+                <BarChart2 className="mx-auto h-12 w-12 text-muted-foreground" />
+                <h3 className="mt-4 text-xl font-semibold">No Insights Found</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Try adjusting your filters or generate a new insight from the AI Assistant.
+                </p>
+                <Button className="mt-6" asChild><Link href="/ai-assistant">Generate Insight</Link></Button>
               </div>
-          )}
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredInsights.map(insight => (
+                    <ReportCard 
+                      key={insight.id}
+                      id={insight.id}
+                      title={insight.title}
+                      description={insight.description}
+                      type={insight.type}
+                      chartType={insight.chartType}
+                      chartData={insight.chartData}
+                      chartConfig={insight.chartConfig}
+                      contentPreviewText={insight.contentPreviewText}
+                      dataAiHint={insight.dataAiHint}
+                      tags={insight.tags}
+                      folder={insight.folder}
+                      lastModified={insight.lastModified}
+                      createdBy={insight.createdBy}
+                      onEdit={() => setEditingInsight(insight)}
+                      onShare={() => setSharingInsight(insight)}
+                      onExport={() => handleExport(insight)}
+                    />
+                  ))}
+                </div>
+            )}
+        </div>
       </div>
-    </div>
-    
-    <EditInsightDialog 
-      insight={editingInsight}
-      isOpen={!!editingInsight}
-      onOpenChange={(open) => !open && setEditingInsight(null)}
-      onSave={handleSaveInsight}
-    />
-    <ShareInsightDialog 
-      insight={sharingInsight}
-      isOpen={!!sharingInsight}
-      onOpenChange={(open) => !open && setSharingInsight(null)}
-    />
+      
+      <EditInsightDialog 
+        insight={editingInsight}
+        isOpen={!!editingInsight}
+        onOpenChange={(open) => !open && setEditingInsight(null)}
+        onSave={handleSaveInsight}
+      />
+      <ShareInsightDialog 
+        insight={sharingInsight}
+        isOpen={!!sharingInsight}
+        onOpenChange={(open) => !open && setSharingInsight(null)}
+      />
+    </>
   );
 }
