@@ -5,6 +5,9 @@ import { TrendingUp, DatabaseZap, Share, Lightbulb, BarChart2, SearchCode } from
 import Link from "next/link";
 import VideoPlayer from "@/components/landing/VideoPlayer";
 
+// Revalidate this page every 3600 seconds (1 hour)
+export const revalidate = 3600;
+
 const benefits = [
   {
     icon: Lightbulb,
